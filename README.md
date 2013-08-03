@@ -60,7 +60,7 @@ this will compile the source in the `src` folder and write the results in `bin`,
 
 FAQ
 ===
-_What does 'Onodrim' mean?_ I am a fan of Tolkien fictional world :) ! . Onodrim is "The name given by the Elves to the giant tree-like beings that Men called Ents." ([The Encyclopedia or Arda](http://www.glyphweb.com/arda/o/onodrim.html)). As you probably know, and Onodrim/Ent is a shepherd of trees. Similarly, this software is a kind of 'shepherd' of your jobs, it should help you to organize and herd them. 
+_What does 'Onodrim' mean?_ I am a fan of Tolkien fictional world :) ! . Onodrim is _"The name given by the Elves to the giant tree-like beings that Men called Ents."_ ([The Encyclopedia or Arda](http://www.glyphweb.com/arda/o/onodrim.html)). As you probably know, and Onodrim/Ent is a shepherd of trees. Similarly, this software is a kind of 'shepherd' of your jobs, it should help you to organize and herd them. 
 
 License
 =======
