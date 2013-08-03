@@ -47,7 +47,7 @@
     <!-- Compile the java code from ${src} into ${bin} -->
     <target name="compile" description="Compile source">
     	<mkdir dir="${bin}"/>
-        <javac srcdir="${src}" destdir="${bin}" includeantruntime="false" target="1.6" source="1.6"/>
+        <javac srcdir="${src}" destdir="${bin}" includeantruntime="false" target="1.6"/>
     </target>
 	
 	<!-- Generate Javadoc -->
