@@ -46,7 +46,7 @@ the code will remain the same! You only need to retrieve the parameter values:
 
 as before, Onodrim will generate all the configurations required (90 in this case).
 
-Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. It also allows to organize the results in handy tables for easy analysis. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
+Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. It also allows to organize the results in handy tables for easy analysis. Besides, it helps to keep (well organized) copies of all jobs, their configurations and results. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
 Requirements, Download & Installation
 =====================================
