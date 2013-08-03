@@ -27,7 +27,7 @@ The `;` tells Onodrim that those are in fact two different values for the same p
 then Onodrim will build _2_ configurations (the `Configuration` class extends `java.util.Properties`) and return them in a `List`. The 2 configurations will contain only `Parameter1`. Of course this is a very simple example. But imagine now that you decide to configure your tasks with two more parameters, and each parameter with several values. You only will need to change the `.properties` file to something like:
 
     Parameter1=123;456;789
-    Parameter2=1;2;3;4;5;6;7;8;9;0
+    Parameter2=0;1;2;3;4;5;6;7;8;9
     Parameter3=11.1;12.2;13.3
     
 the code will remain the same! You only need to retrieve the parameter values:
