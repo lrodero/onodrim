@@ -42,12 +42,21 @@ the code will remain the same! You only need to retrieve the parameter values:
 
 as before, Onodrim will generate all the configurations required (90 in this case).
 
-Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.
+Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
-Usage
-=====
+Requirements, Download & Installation
+=====================================
 
-Onodrim is written in Java and so it can be used from Java programs straight ahead. Using it with other programming languages should be possible, as there are mechanisms that allow to do so (for example JPype or Py4J in Python).
+Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) is needed to compile and generate its documentation. 
+
+Onodrim is available through github. A copy of it can be downloaded by running the following code:
+
+    $ git clone git://github.com/lrodero/onodrim.git
+    $ cd onodrim
+    $ ant
+
+this will compile the source in the `src` folder and write the results in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source.
+
 
 FAQ
 ===
@@ -55,4 +64,4 @@ _What does 'Onodrim' mean?_ I am a fan of Tolkien fictional world :) ! . Onodrim
 
 License
 =======
-Onodrim is distributed under the GPL v3 license (http://www.gnu.org/licenses/gpl.html). You should have received a copy of this license along with Onodrim.
+Onodrim is distributed under the [GPL v3 license](http://www.gnu.org/licenses/gpl.html). You should have received a copy of this license along with Onodrim.
