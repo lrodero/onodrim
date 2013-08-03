@@ -21,6 +21,8 @@
 package org.onodrim;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -290,6 +292,19 @@ public class Configuration extends Properties {
     public boolean getBooleanParameter(String parameterName, boolean defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Boolean.class, defaultValue);
     }
+    
+    /** 
+     * Get parameter value as {@code Boolean}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Boolean}
+     *             using {@link Boolean#parseBoolean(String)}.
+     */
+    public Boolean getBooleanParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Boolean.class, null);
+    }
 
     /**
      * Get parameter value as {@code byte}, if it is defined. If not return the
@@ -308,6 +323,19 @@ public class Configuration extends Properties {
             throws ConfigurationException {
         return getParameter(parameterName, Byte.class, defaultValue);
     }
+    
+    /** 
+     * Get parameter value as {@code Byte}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Boolean}
+     *             using {@link Byte#parseByte(String)}.
+     */
+    public Byte getByteParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Byte.class, null);
+    }
 
     /**
      * Get parameter value as {@code short}, if it is defined. If not return the
@@ -324,6 +352,19 @@ public class Configuration extends Properties {
      */
     public short getShortParameter(String parameterName, short defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Short.class, defaultValue);
+    }
+    
+    /** 
+     * Get parameter value as {@code Short}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Short}
+     *             using {@link Short#parseShort(String)}.
+     */
+    public Short getShortParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Short.class, null);
     }
 
     /**
@@ -342,6 +383,19 @@ public class Configuration extends Properties {
     public int getIntParameter(String parameterName, int defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Integer.class, defaultValue);
     }
+    
+    /** 
+     * Get parameter value as {@code Integer}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Integer}
+     *             using {@link Integer#parseInt(String)}.
+     */
+    public Integer getIntParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Integer.class, null);
+    }
 
     /**
      * Get parameter value as {@code long}, if it is defined. If not return the
@@ -358,6 +412,19 @@ public class Configuration extends Properties {
      */
     public long getLongParameter(String parameterName, long defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Long.class, defaultValue);
+    }
+    
+    /** 
+     * Get parameter value as {@code Long}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Long}
+     *             using {@link Long#parseLong(String)}.
+     */
+    public Long getLongParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Long.class, null);
     }
 
     /**
@@ -376,6 +443,19 @@ public class Configuration extends Properties {
     public double getFloatParameter(String parameterName, float defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Float.class, defaultValue);
     }
+    
+    /** 
+     * Get parameter value as {@code Float}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Float}
+     *             using {@link Float#parseFloat(String)}.
+     */
+    public Float getFloatParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Float.class, null);
+    }
 
     /**
      * Get parameter value as {@code double}, if it is defined. If not return
@@ -392,6 +472,19 @@ public class Configuration extends Properties {
      */
     public double getDoubleParameter(String parameterName, double defaultValue) throws ConfigurationException {
         return getParameter(parameterName, Double.class, defaultValue);
+    }
+    
+    /** 
+     * Get parameter value as {@code Double}, if it is defined. If not, return {@code null}.
+     * @param parameterName
+     *            Name of the parameter whose value is required.
+     * @return The value of the parameter if defined. If not, {@code null}.
+     * @throws ConfigurationException
+     *             if the parameter value could not be parsed to {@code Double}
+     *             using {@link Double#parseDouble(String)}.
+     */
+    public Double getDoubleParameter(String parameterName) throws ConfigurationException {
+    	return getParameter(parameterName, Double.class, null);
     }
 
     /**
@@ -847,6 +940,21 @@ public class Configuration extends Properties {
             throw new ConfigurationException("Could not build any job configuration (all properties empty?)");
         
         return configurations;
+    }
+    
+    public static List<Configuration> buildConfigurations(File jobsConfsFile) throws ConfigurationException {
+    	
+    	Properties properties = new Properties();
+    	try {
+			properties.load(new FileReader(jobsConfsFile));
+		} catch (FileNotFoundException exception) {
+			throw new ConfigurationException("The properties file '" + jobsConfsFile.getAbsolutePath() + "' could not be found", exception);
+		} catch (IOException exception) {
+			throw new ConfigurationException(IOException.class.getName() + " exception caught when trying to read the properties file '" + jobsConfsFile.getAbsolutePath() + "'", exception);
+		}
+    	
+    	return buildConfigurations(properties);
+    	
     }
 
     public static List<Configuration> buildConfigurations(Properties jobsConfsProps) throws ConfigurationException {
