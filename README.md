@@ -18,7 +18,9 @@ Adding new configurable parameters is easy, it is enough to add the parameter in
 
 The `;` tells Onodrim that those are in fact two different values for the same parameter. If we run the following code
 
-    List<Configuration> confs = org.onodrim.Configuration.buildConfigurations(new File("test.properties"));
+    import org.onodrim.Configuration;
+    ...
+    List<Configuration> confs = Configuration.buildConfigurations(new File("test.properties"));
     for(Configuration conf: confs) {
         int p1 = conf.getIntParameter("Parameter1");
         // Your stuff here
@@ -31,8 +33,10 @@ then Onodrim will build _2_ configurations (the `Configuration` class extends `j
     Parameter3=11.1;12.2;13.3
     
 the code will remain the same! You only need to retrieve the parameter values:
-
-    List<Configuration> confs = org.onodrim.Configuration.buildConfigurations(new File("test.properties"));
+    
+    import org.onodrim.Configuration;
+    ...
+    List<Configuration> confs = Configuration.buildConfigurations(new File("test.properties"));
     for(Configuration conf: confs) {
         int p1 = conf.getIntParameter("Parameter1");
         int p2 = conf.getIntParameter("Parameter2");
@@ -42,7 +46,7 @@ the code will remain the same! You only need to retrieve the parameter values:
 
 as before, Onodrim will generate all the configurations required (90 in this case).
 
-Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
+Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. It also allows to organize the results in handy tables for easy analysis. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
 Requirements, Download & Installation
 =====================================
