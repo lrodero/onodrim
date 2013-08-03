@@ -1,0 +1,240 @@
+## Copyright 2012 Luis Rodero-Merino.
+## 
+## This file is part of Onodrim.
+## 
+## Onodrim is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+## 
+## Onodrim is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Onodrim.  If not, see <http://www.gnu.org/licenses/>.
+
+# This file intends to give a brief overview of the parameters that can be
+# used to tune Onodrim behaviour
+
+################################################################
+## Properties used by Onodrim itself, with its default values ##
+################################################################
+#onodrim.valuesSeparator=;
+#onodrim.groupConfsBy=
+#onodrim.repetitions=1
+#onodrim.packets=
+#onodrim.ignoreDefaultPacket=false
+#onodrim.generateParametersValuesCondition=
+#onodrim.boundParameters=
+#onodrim.jobs.allResultsDir=results
+#onodrim.jobs.paramsInResultsDirName=true
+#onodrim.jobs.cleanAllPrevResults=true
+#onodrim.jobs.cleanJobPrevResults=true
+#onodrim.jobs.parallel=1
+#onodrim.jobs.tablesResults=
+
+##############################################
+## Usage example of onodrim.valuesSeparator ##
+##############################################
+## This parameter sets which string must be used to split configurations by.
+## Let's assume we have the following two parameters definition:
+# Param1=a;b
+# Param2=1_2
+## By default, Onodrim will generate these two configurations:
+## 1-> Param1=a Param2=1_2
+## 2-> Param1=b Param2=1_2
+## But if we set onodrim.valuesSeparator="_" then we will have:
+## 1-> Param1=a;b Param2=1
+## 2-> Param1=a;b Param2=2
+
+##########################################
+## Usage example of onodrim.repetitions ##
+##########################################
+## It sets how many copies of each configuration must be created.
+## Let's assume we have the following parameter definition:
+# Param1=a;b
+## Onodrim will create two configurations:
+## 1-> Param1=a
+## 2-> Param1=b
+## Now we set onodrim.repetitions=2, then we will have the following configurations: 
+## 1 -> Param1=a   
+## 2 -> Param1=a   
+## 3 -> Param1=b    
+## 4 -> Param1=b
+
+###########################################
+## Usage example of onodrim.groupConfsBy ##
+###########################################
+## This parameter sets how the generated configurations must be ordered.
+## Let's assume we have the following two parameters definition:
+# Param1=a;b
+# Param2=1;2
+## If we set onodrim.groupConfsBy={Param1,Param2} then the configurations will be generated in this order:
+## 1-> Param1=a Param2=1
+## 2-> Param1=a Param2=2
+## 3-> Param1=b Param2=1
+## 4-> Param1=b Param2=2
+## but if we use onodrim.groupConfsBy={Param2,Param1} then configurations will be generated as follows:
+## 1-> Param1=a Param2=1
+## 2-> Param1=b Param2=1
+## 3-> Param1=a Param2=2
+## 4-> Param1=b Param2=2
+
+######################################
+## Usage example of onodrim.packets ##
+######################################
+## This is used to generate configurations by 'packets', where different parameters belong
+## to different packets. Let's assume we have this definition of parameters:
+# P1.Param1=a
+# P1.Param2=1;2
+# P2.Param3=X;Y
+## If we tell Onodrim that the packets are 'P1' and 'P2' (onodrim.packets={P1,P2}
+## then we'll get these configurations:
+## 1-> P1.Param1=a P1.Param2=1 
+## 2-> P1.Param1=a P1.Param2=2 
+## 3-> P2.Param3=X 
+## 3-> P2.Param4=Y
+## NOTE: The parameters that do not belong to any of the defined packets belong
+## to a 'default' packet. Also, the 'ALL' package is for parameters that belong
+## to all packets, including the default one (and so to all configurations!)
+## If we have these parameters:
+# P1.Param1=a
+# P1.Param2=1;2
+# P2.Param3=X;Y
+# ALL.Param4=Z
+# Then these would be the configurations created:
+## 1-> ALL.Param4=Z
+## 2-> P1.Param1=a P1.Param2=1 ALL.Param4=Z  
+## 3-> P1.Param1=a P1.Param2=2 ALL.Param4=Z 
+## 4-> P2.Param3=X ALL.Param4=Z 
+## 5-> P2.Param4=Y ALL.Param4=Z
+
+##################################################
+## Usage example of onodrim.ignoreDefaultPacket ##
+##################################################
+## If set to 'true', the configuration of the default packet
+## is not generated.
+
+################################################################
+## Usage example of onodrim.generateParametersValuesCondition ##
+################################################################
+## It is used to control when parameters should be generated, depending
+## on the values of other parameter. For example:
+# Param1=a;b
+# Param2=1;2
+# Param3=X
+# Param4=Y
+# Param5=j;k
+# onodrim.generateParametersValuesCondition={Param1:Param2:Param5=j,Param3:Param4:Param5=k}
+## (means that Param1 and Param2 must be generated only when Param5 equals 'j', and Param3
+## and Param4 must be generated only when Param5=k)
+## That would generate these configurations:
+## 1-> Param1=a Param2=1 Param5=j
+## 2-> Param1=b Param2=1 Param5=j
+## 3-> Param1=a Param2=2 Param5=j
+## 4-> Param1=b Param2=2 Param5=j
+## 5-> Param3=X Param4=Y Param5=k
+
+##############################################
+## Usage example of onodrim.boundParameters ##
+##############################################
+## It is used to control which parameters combinations must be
+## generated, depending on the values of those combinations. For example:
+# Param1=a;b
+# Param2=1;2
+# Param3=X
+# Param4=Y
+# Param5=j;k 
+# Param6=l;m
+# onodrim.boundParameters={Param1=a:Param2=1,Param5=j:Param6=l}
+## (means that when Param1 equals 'a' Param2 must equal '1' (and the other way around),
+## and when Param5 equals 'j' Param6 must equal 'l' (and the other way around again))
+## That would generate these configurations:
+## 1->Param1=a Param2=1 Param3=X Param4=Y Param5=j Param6=l
+## 2->Param1=a Param2=1 Param3=X Param4=Y Param5=k Param6=m
+## 3->Param1=b Param2=2 Param3=X Param4=Y Param5=j Param6=l
+## 4->Param1=b Param2=2 Param3=X Param4=Y Param5=k Param6=m
+
+#################################################
+## Usage example of onodrim.jobs.allResultsDir ##
+#################################################
+## Sets the name of the folder where all jobs results folders will be written to
+## (defaults to 'results').
+## For example:
+# onodrim.jobs.allResultsDir=AllResultsDir
+
+##########################################################
+## Usage example of onodrim.jobs.paramsInResultsDirName ##
+##########################################################
+## Sets which parameters (names and values) must be included in the name of the folders
+## where the results of each job will be stored (defaults to none, so the folders will be
+## named as 'Job-1', 'Job-2'...
+## For example:
+# Param1=a;b
+# onodrim.jobs.paramsInResultsDirName={Param1}
+## would result in two experiments run, with these names: 'Job-1�Param1=a' and 'Job-2�Param1=b'
+
+#######################################################
+## Usage example of onodrim.jobs.cleanAllPrevResults ##
+#######################################################
+## This parameter sets whether all results from previous executions should
+## be removed (i.e. the folder where all jobs results are stored is removed
+## and recreated again), that folder is set by parameter onodrim.jobs.allResultsDir
+## (described above). Defaults to 'true'. If set to 'false' and the folder is present,
+## then no job will be run.
+## For example:
+# onodrim.jobs.allResultsDir=experimentsResults
+# onodrim.jobs.cleanAllPrevResults=true
+## would force Onodrim to delete the 'experimentsResults' folder if present.
+
+#######################################################
+## Usage example of onodrim.jobs.cleanJobPrevResults ##
+#######################################################
+## Before a job is run, it is checked whether there are results of a previous
+## execution of a job with the same configuration (they are looked for in all
+## subfolders of folder onodrim.jobs.allResultsDir). If so, this parameter sets
+## what to do, when set to 'true' those results will be removed and the job will
+## be executed normally. If set to 'false', the job is not executed but the
+## results of the previous execution are assigned to it.
+## It could be that each configuration must be repeated several times, (see parameter
+## onodrim.repetitions), in such case results from
+
+## If this parameter is false then the onodrim.jobs.cleanAllPrevResults parameter
+## must be set to false as well!
+
+############################################
+## Usage example of onodrim.jobs.parallel ##
+############################################
+## This parameter sets how many jobs must be run in parallel, that is how many threads
+## must be used to run jobs in parallel. If set to '0' it will
+## be set to the amount of available cores in the host running the process.
+## Defaults to '1'.
+## For example:
+#onodrim.jobs.parallel=2
+## would tell Onodrim to start two parallel threads to run jobs.
+
+############################################
+## Usage example of onodrim.jobs.parallel ##
+############################################
+## Please check the javadoc! :| .
+## For example:
+#onodrim.jobs.tablesResults={P1.Prop1;P1.Prop2:P1.Prop3|P1.Prop4|Result|CONCAT}
+## would tell Onodrim to generate one table from the results labeled 'Result', (if several are found
+## for the same parameters values in the table, results will be CONCATenated).
+## For example:
+# Param1=1
+# Param2=a;b
+# Param3=x;y
+# Param4=o
+# onodrim.repetitions=2  <-- be aware each configuration will be run twice!
+## let's assume each job outputs as 'Result' simply the values of the parameters in uppercase and concatenated. Then the
+## table will look like:
+#         Param1                    1                    1
+#         Param2                    a                    b   Param3                    x                    y
+#Param4
+#     o           OYA1|OYA1|OXA1|OXA1  OXB1|OXB1|OYB1|OYB1           OXA1|OXA1|OXB1|OXB1  OYA1|OYA1|OYB1|OYB1
+#
+
+ 
