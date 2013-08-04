@@ -1,5 +1,7 @@
-onodrim
+Onodrim
 =======
+
+(Contact at <onodrim.project@gmail.com>)
 
 Onodrim is a small Java library that eases the task of configuring and collect the results of bunches of jobs. Onodrim can be handy when it is required to run a computational job against several parameters --where each parameter can have different values,and where the set of parameters can change -- and to organize the results to ease their analysis.
 
@@ -20,7 +22,7 @@ The `;` tells Onodrim that those are in fact two different values for the same p
 
     import org.onodrim.Configuration;
     ...
-    List<Configuration> confs = Configuration.buildConfigurations(new File("test.properties"));
+    List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
     for(Configuration conf: confs) {
         int p1 = conf.getIntParameter("Parameter1");
         // Your stuff here
@@ -36,7 +38,7 @@ your code will remain the same! You only need to retrieve the new parameter valu
     
     import org.onodrim.Configuration;
     ...
-    List<Configuration> confs = Configuration.buildConfigurations(new File("test.properties"));
+    List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
     for(Configuration conf: confs) {
         int p1 = conf.getIntParameter("Parameter1");
         int p2 = conf.getIntParameter("Parameter2");
@@ -53,7 +55,7 @@ Requirements, Download & Installation
 
 Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation.
 
-Onodrim is available through github. A copy of it can be downloaded by running the following code:
+Onodrim is available through [github](https://github.com/lrodero/onodrim). A copy of it can be downloaded by running the following code:
 
     $ git clone git://github.com/lrodero/onodrim.git
     $ cd onodrim
@@ -61,10 +63,12 @@ Onodrim is available through github. A copy of it can be downloaded by running t
 
 this will compile the source in the `src` folder and store the compiled classes in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source. To use Onodrim it is only needed to add the `onodrim-0.5.jar` file to the `CLASSPATH`.
 
+License & Contact
+=================
+Onodrim is distributed under the [GPL v3 license](http://www.gnu.org/licenses/gpl.html).
+
+If you use Onodrim, I'd really appreaciate if you let me know! I'm very interested in knowing who (and how) is using Onodrim in order to improve it. Thus, feedback and comments are welcome :) . You can contact me at <onodrim.project@gmail.com>. If you find any bug or have any problem please report the issue [here](https://github.com/lrodero/onodrim/issues) (or, again, contact me by email). 
+
 FAQ
 ===
 **What does 'Onodrim' mean?** I am a fan of Tolkien fictional world :) ! . Onodrim is _"The name given by the Elves to the giant tree-like beings that Men called Ents."_ ([The Encyclopedia or Arda](http://www.glyphweb.com/arda/o/onodrim.html)). As you probably know, and Onodrim/Ent is a shepherd of trees. Similarly, this software is a kind of 'shepherd' of your jobs, it should help you to organize and herd them. 
-
-License
-=======
-Onodrim is distributed under the [GPL v3 license](http://www.gnu.org/licenses/gpl.html). You should have received a copy of this license along with Onodrim.
