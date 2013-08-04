@@ -57,7 +57,7 @@ Requirements, Download & Installation
 
 Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation.
 
-**Cloning through git** Onodrim is available through [github](https://github.com/lrodero/onodrim). A copy can be downloaded and compiled by running the following code:
+**Cloning through git** A git repository of Onodrim is available in [github](https://github.com/lrodero/onodrim). You can clone to get Onodrim sources and then compile them by running the following commands:
 
     $ git clone git://github.com/lrodero/onodrim.git
     $ cd onodrim
@@ -65,14 +65,14 @@ Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.
 
 this will compile the source in the `src` folder and store the compiled classes in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source. To use Onodrim it is only needed to add the `onodrim-0.5.jar` file to the `CLASSPATH`.
 
-**In a .zip archive** You can download also a `.zip` file with Onodrim sources. Just run the following commands:
+**In a .zip archive** You can also download a `.zip` file containing Onodrim sources. Just run the following commands:
 
     $ wget https://github.com/lrodero/onodrim/archive/master.zip
     $ unzip master.zip
     $ cd onodrim-master
     $ ant
 
-calling to `ant` will have the same effect described above: compiling sources, generating Javadocs and creating `.jar` files.
+calling to `ant` will have the same effect as above: compiling sources, generating Javadocs and creating `.jar` files.
 
 License & Contact
 =================
