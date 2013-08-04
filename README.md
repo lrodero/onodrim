@@ -1,19 +1,19 @@
 onodrim
 =======
 
-Onodrim is a Java library aimed to ease the configuration and collection of results of generic jobs. Onodrim can be handy when it is required to run a computational tasks against several parameters --where each parameter can have different values-- and to organize the results in tables to ease their analysis.
+Onodrim is a small Java library that eases the task of configuring and collect the results of bunches of jobs. Onodrim can be handy when it is required to run a computational job against several parameters --where each parameter can have different values-- and to organize the results to ease their analysis.
 
 **The problem:** often, it is not possible to know beforehand which are the job parameters that should be configurable, in fact, many times those are discovered as more executions are run and a deeper analysis of results is required. Adding new configurable parameters to the code and assigning values to them will require changing (once and again) the code.
 
 A pausible solution is just to define parameters values outside the code in a `.properties` file. For example:
 
     Parameter1=123
-    Parameter2=456
 
 Adding new configurable parameters is easy, it is enough to add the parameter in the file and change the code to get the value from it. However, what happens if we want to run the job against several values of each parameter, to compare the results? Creating a different `.properties` value for each different parameter would be cumbersome, and adding new parameters would force us to re-create all `.properties` files again.
 
-**Onodrim to the rescue:** let's see how Onodrim works with the simplest example. Let's assume we want to check the results when `Parameter1` has two different values: 123 and 456. We will create the following `.properties` file
+**Onodrim to the rescue:** let's see how Onodrim works with the simplest example. Let's assume we want to check the results when `Parameter1` has two different values: 123 and 456. We will create the following `test.properties` file
 
+    # The ; is used to separate parameter values
     Parameter1=123;456
 
 The `;` tells Onodrim that those are in fact two different values for the same parameter. If we run the following code
@@ -26,7 +26,7 @@ The `;` tells Onodrim that those are in fact two different values for the same p
         // Your stuff here
     }
 
-then Onodrim will build 2 configurations (the `Configuration` class extends `java.util.Properties`) and return them in a `List`. The 2 configurations will contain only `Parameter1`. Of course this is a very simple example. But imagine now that you decide to configure your tasks with two more parameters, and each parameter with several values. You only will need to change the `.properties` file to something like:
+then Onodrim will build 2 configurations (the `Configuration` class extends `java.util.Properties`). Of course this is a very simple example. But imagine now that you decide to configure your tasks with two more parameters, and see the outcome when several values are tried for each parameter. You only will need to change the `.properties` file to something like:
 
     Parameter1=123;456;789
     Parameter2=0;1;2;3;4;5;6;7;8;9
@@ -51,7 +51,7 @@ Onodrim also implements several mechanisms (conditional parameter generation, pa
 Requirements, Download & Installation
 =====================================
 
-Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) is needed to compile and generate its documentation. 
+Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation. 
 
 Onodrim is available through github. A copy of it can be downloaded by running the following code:
 
@@ -59,7 +59,9 @@ Onodrim is available through github. A copy of it can be downloaded by running t
     $ cd onodrim
     $ ant
 
-this will compile the source in the `src` folder and write the results in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source.
+this will compile the source in the `src` folder and store the compiled classes in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source.
+
+Now, to use it it is only needed to add the `onodrim-0.5.jar` file to the `CLASSPATH`.
 
 
 FAQ
