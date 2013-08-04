@@ -946,8 +946,8 @@ public class Configuration extends Properties {
      * This method will load the properties in the file passed as parameter
      * (using {@link java.util.Properties#load(java.io.Reader)} method),
      * and then will forward the call to the {@link #buildConfigurations(Properties)} method.
-     * @param jobsConfsFile File containing the definition of the configurations to bulid. It must be
-     * written using the {@code .properties} files format ({@link http://en.wikipedia.org/wiki/.properties}).
+     * @param jobsConfsFile File containing the definition of the configurations to build. It must be
+     * written using the {@code .properties} files format ( @see http://en.wikipedia.org/wiki/.properties).
      * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
      * @throws ConfigurationException If some error is found in the definition.
      */

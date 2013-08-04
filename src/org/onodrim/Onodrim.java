@@ -51,8 +51,8 @@ public class Onodrim {
     
     /**
      * This method only wraps a call to the {@link Configuration#buildConfigurations(File)} method.
-     * @param jobsConfsFile File containing the definition of the configurations to bulid. It must be
-     * written using the {@code .properties} files format ({@link http://en.wikipedia.org/wiki/.properties}).
+     * @param jobsConfsFile File containing the definition of the configurations to build. It must be
+     * written using the {@code .properties} files format ( @see http://en.wikipedia.org/wiki/.properties ).
      * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
      * @throws ConfigurationException If some error is found in the definition.
      */
