@@ -61,7 +61,7 @@ public class Onodrim {
     }
     
     /**
-     * This method only wraps a call to the {@link Configuration#buildConfigurations(Properties))} method.
+     * This method only wraps a call to the {@link Configuration#buildConfigurations(Properties)} method.
      * @param jobsConfsProps The definition of the configurations to build.
      * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
      * @throws ConfigurationException If some error is found in the definition.
