@@ -1,7 +1,7 @@
 onodrim
 =======
 
-Onodrim is a small Java library that eases the task of configuring and collect the results of bunches of jobs. Onodrim can be handy when it is required to run a computational job against several parameters --where each parameter can have different values-- and to organize the results to ease their analysis.
+Onodrim is a small Java library that eases the task of configuring and collect the results of bunches of jobs. Onodrim can be handy when it is required to run a computational job against several parameters --where each parameter can have different values,and where the set of parameters can change -- and to organize the results to ease their analysis.
 
 **The problem:** often, it is not possible to know beforehand which are the job parameters that should be configurable, in fact, many times those are discovered as more executions are run and a deeper analysis of results is required. Adding new configurable parameters to the code and assigning values to them will require changing (once and again) the code.
 
@@ -26,13 +26,13 @@ The `;` tells Onodrim that those are in fact two different values for the same p
         // Your stuff here
     }
 
-then Onodrim will build 2 configurations (the `Configuration` class extends `java.util.Properties`). Of course this is a very simple example. But imagine now that you decide to configure your tasks with two more parameters, and see the outcome when several values are tried for each parameter. You only will need to change the `.properties` file to something like:
+then Onodrim will build 2 configurations (the `Configuration` class extends `java.util.Properties`). Of course this is a very simple example. But imagine now that you decide to configure your tasks with two more parameters, and see the outcome when several values are tried for each parameter. You only will need to change the `test.properties` file to something like:
 
     Parameter1=123;456;789
     Parameter2=0;1;2;3;4;5;6;7;8;9
     Parameter3=11.1;12.2;13.3
     
-the code will remain the same! You only need to retrieve the parameter values:
+your code will remain the same! You only need to retrieve the new parameter values:
     
     import org.onodrim.Configuration;
     ...
@@ -44,14 +44,14 @@ the code will remain the same! You only need to retrieve the parameter values:
         // Your stuff here
     }
 
-as before, Onodrim will generate all the configurations required (90 in this case).
+just as before, Onodrim will generate all the configurations required (90 in this case).
 
-Onodrim also implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. It also allows to organize the results in handy tables for easy analysis. Besides, it helps to keep (well organized) copies of all jobs, their configurations and results. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
+Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration. It also allows to organize the results in handy tables for easy analysis. Besides, it helps to keep (well organized) copies of all jobs, their configurations and results. A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
 Requirements, Download & Installation
 =====================================
 
-Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation. 
+Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation.
 
 Onodrim is available through github. A copy of it can be downloaded by running the following code:
 
@@ -59,10 +59,7 @@ Onodrim is available through github. A copy of it can be downloaded by running t
     $ cd onodrim
     $ ant
 
-this will compile the source in the `src` folder and store the compiled classes in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source.
-
-Now, to use it it is only needed to add the `onodrim-0.5.jar` file to the `CLASSPATH`.
-
+this will compile the source in the `src` folder and store the compiled classes in `bin`, it will generate the Javadoc API documentation in `doc`, and it will create three `.jar` files with the class files, documentation and source. To use Onodrim it is only needed to add the `onodrim-0.5.jar` file to the `CLASSPATH`.
 
 FAQ
 ===
