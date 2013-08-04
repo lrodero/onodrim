@@ -942,6 +942,15 @@ public class Configuration extends Properties {
         return configurations;
     }
     
+    /**
+     * This method will load the properties in the file passed as parameter
+     * (using {@link java.util.Properties#load(java.io.Reader)} method),
+     * and then will forward the call to the {@link #buildConfigurations(Properties)} method.
+     * @param jobsConfsFile File containing the definition of the configurations to bulid. It must be
+     * written using the {@code .properties} files format ({@link http://en.wikipedia.org/wiki/.properties}).
+     * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
+     * @throws ConfigurationException If some error is found in the definition.
+     */
     public static List<Configuration> buildConfigurations(File jobsConfsFile) throws ConfigurationException {
     	
     	Properties properties = new Properties();
@@ -957,6 +966,14 @@ public class Configuration extends Properties {
     	
     }
 
+    /**
+     * This method will build the configurations as defined by the Properties instance passed
+     * as a parameter. To know more about how Onodrim interprets this file and generates the
+     * configurations please @see https://github.com/lrodero/onodrim/wiki .
+     * @param jobsConfsProps The definition of the configurations to build.
+     * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
+     * @throws ConfigurationException If some error is found in the definition.
+     */
     public static List<Configuration> buildConfigurations(Properties jobsConfsProps) throws ConfigurationException {
 
         Configuration jobsConf = new Configuration(jobsConfsProps);

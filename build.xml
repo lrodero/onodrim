@@ -47,13 +47,13 @@
     <!-- Compile the java code from ${src} into ${bin} -->
     <target name="compile" description="Compile source">
     	<mkdir dir="${bin}"/>
-        <javac srcdir="${src}" destdir="${bin}" includeantruntime="false" target="1.6"/>
+        <javac srcdir="${src}" destdir="${bin}" includeantruntime="false"/>
     </target>
 	
 	<!-- Generate Javadoc -->
 	<target name="doc">
         <mkdir dir="${doc}"/>
-	    <javadoc access="package" author="true" destdir="${doc}" Windowtitle="Onodrim ${version} API" doctitle="Onodrim ${version} API" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.onodrim,org.onodrim.annotations" source="1.6" sourcepath="${src}" splitindex="true" use="true" version="true"/>
+	    <javadoc access="package" author="true" destdir="${doc}" Windowtitle="Onodrim ${version} API" doctitle="Onodrim ${version} API" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.onodrim,org.onodrim.annotations" sourcepath="${src}" splitindex="true" use="true" version="true"/>
 	</target>
 
 	<!-- Gen Jar files -->

@@ -21,6 +21,7 @@
 package org.onodrim;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,27 @@ public class Onodrim {
     private static InheritableThreadLocal<Job> threadJobMap = new InheritableThreadLocal<Job>();
 
     private Onodrim() {}
+    
+    /**
+     * This method only wraps a call to the {@link Configuration#buildConfigurations(File)} method.
+     * @param jobsConfsFile File containing the definition of the configurations to bulid. It must be
+     * written using the {@code .properties} files format ({@link http://en.wikipedia.org/wiki/.properties}).
+     * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
+     * @throws ConfigurationException If some error is found in the definition.
+     */
+    public static List<Configuration> buildConfigurations(File jobsConfsFile) throws ConfigurationException {
+    	return Configuration.buildConfigurations(jobsConfsFile);
+    }
+    
+    /**
+     * This method only wraps a call to the {@link Configuration#buildConfigurations(Properties))} method.
+     * @param jobsConfsProps The definition of the configurations to build.
+     * @return The configurations generated, in a {@code List} of {@link Configuration} instances.
+     * @throws ConfigurationException If some error is found in the definition.
+     */
+    public static List<Configuration> buildConfigurations(Properties jobsConfsProps) throws ConfigurationException {
+    	return Configuration.buildConfigurations(jobsConfsProps);
+    }
 
     /**
      * Create an instance of {@link JobsSet} class. The {@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Properties.html">Properties</a>}
@@ -63,7 +85,7 @@ public class Onodrim {
      * 
      * @see JobsSet#JobsSet(Properties, JobEntryPoint)
      */
-    public static JobsSet createJobsSet(Properties confProperties, JobEntryPoint entryPoint) throws ConfigurationException {
+    public static JobsSet buildJobsSet(Properties confProperties, JobEntryPoint entryPoint) throws ConfigurationException {
         return new JobsSet(confProperties, entryPoint);
     }
 
@@ -86,13 +108,13 @@ public class Onodrim {
      * 
      * @see JobsSet#JobsSet(File, JobEntryPoint)
      */
-    public static JobsSet createJobsSet(File confFile, JobEntryPoint entryPoint) throws ConfigurationException {
+    public static JobsSet buildJobsSet(File confFile, JobEntryPoint entryPoint) throws ConfigurationException {
         return new JobsSet(confFile, entryPoint);
     }
 
     /**
      * Create the {@link JobsSet} instance corresponding to that configuration (see
-     * {@link #createJobsSet(Properties, JobEntryPoint)}) method) and immediately run the {@link Job} instances
+     * {@link #buildJobsSet(Properties, JobEntryPoint)}) method) and immediately run the {@link Job} instances
      * in the set by calling to {@link JobsSet#runJobs()}.
      *   
      * @param confProperties Base configuration of Onodrim and the jobs to be run
@@ -101,12 +123,12 @@ public class Onodrim {
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      */
     public static void runJobs(Properties confProperties, JobEntryPoint entryPoint) throws JobExecutionException, ConfigurationException {
-        Onodrim.createJobsSet(confProperties, entryPoint).runJobs();
+        Onodrim.buildJobsSet(confProperties, entryPoint).runJobs();
     }
 
     /**
      * Create the {@link JobsSet} instance corresponding to tje configuration carried by the {@link File} passed
-     * as paremeter (see {@link #createJobsSet(File, JobEntryPoint)}) method) and immediately run the {@link Job}
+     * as paremeter (see {@link #buildJobsSet(File, JobEntryPoint)}) method) and immediately run the {@link Job}
      * instances in the set by calling to {@link JobsSet#runJobs()}.
      *   
      * @param confFile This file will be read to generate the base configuration that will be used
@@ -116,13 +138,13 @@ public class Onodrim {
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      */
     public static void runJobs(File confFile, JobEntryPoint entryPoint) throws JobExecutionException, ConfigurationException {
-        Onodrim.createJobsSet(confFile, entryPoint).runJobs();
+        Onodrim.buildJobsSet(confFile, entryPoint).runJobs();
     }
 
     /**
      * Similar to {@link #runJobs(Properties, JobEntryPoint)}, but it also takes the {@link JobsExecutionWatcher}
      * passed as parameter when starting the execution to the {@link JobsSet} instance. In other words, it generates
-     * the {@link JobsSet} instance (by {@link #createJobsSet(Properties, JobEntryPoint)}) and calls the
+     * the {@link JobsSet} instance (by {@link #buildJobsSet(Properties, JobEntryPoint)}) and calls the
      * {@link JobsSet#runJobs(JobsExecutionWatcher)} method on it.
      * 
      * @param confProperties Base configuration of Onodrim and the jobs to be run
@@ -134,13 +156,13 @@ public class Onodrim {
     public static void runJobs( Properties confProperties,
                                 JobEntryPoint entryPoint,
                                 JobsExecutionWatcher watcher) throws JobExecutionException, ConfigurationException {
-        Onodrim.createJobsSet(confProperties, entryPoint).runJobs(watcher);
+        Onodrim.buildJobsSet(confProperties, entryPoint).runJobs(watcher);
     }
 
     /**
      * Similar to {@link #runJobs(File, JobEntryPoint)}, but it also takes the {@link JobsExecutionWatcher}
      * passed as parameter when starting the execution to the {@link JobsSet} instance. In other words, it generates
-     * the {@link JobsSet} instance (by {@link #createJobsSet(File, JobEntryPoint)}) and calls the
+     * the {@link JobsSet} instance (by {@link #buildJobsSet(File, JobEntryPoint)}) and calls the
      * {@link JobsSet#runJobs(JobsExecutionWatcher)} method on it.
      * 
      * @param confFile This file will be read to generate the base configuration that will be used
@@ -153,7 +175,7 @@ public class Onodrim {
     public static void runJobs( File confFile,
                                 JobEntryPoint entryPoint,
                                 JobsExecutionWatcher watcher) throws JobExecutionException, ConfigurationException {
-        Onodrim.createJobsSet(confFile, entryPoint).runJobs(watcher);
+        Onodrim.buildJobsSet(confFile, entryPoint).runJobs(watcher);
     }
 
     /**
