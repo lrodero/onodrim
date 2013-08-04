@@ -20,6 +20,7 @@ Adding new configurable parameters is easy, it is enough to add the parameter in
 
 The `;` tells Onodrim that those are in fact two different values for the same parameter. If we run the following code
 
+    import org.onodrim.Onodrim;
     import org.onodrim.Configuration;
     ...
     List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
@@ -36,6 +37,7 @@ then Onodrim will build 2 configurations (the `Configuration` class extends `jav
     
 your code will remain the same! You only need to retrieve the new parameter values:
     
+    import org.onodrim.Onodrim;
     import org.onodrim.Configuration;
     ...
     List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
