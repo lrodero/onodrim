@@ -22,6 +22,7 @@ If we run the following code
     List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
     for(Configuration conf: confs) {
         int p1 = conf.getIntParameter("Parameter1");
+        int p2 = conf.getIntParameter("Parameter2");
         // Your stuff here
     }
 
