@@ -50,7 +50,7 @@ for(Configuration conf: confs) {
 **Is that all?** No :) .
 - Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.
 - It also allows to organize the results in handy tables for easy analysis.
-- Besides, it helps to keep (well organized) copies of all jobs, their configurations and results.
+- Besides, it helps to keep (well organized) copies of all jobs, their configurations and results. Onodrim takes care of this when you delegate it the execution of jobs (automatic execution).
 
 A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
