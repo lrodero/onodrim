@@ -47,6 +47,26 @@ for(Configuration conf: confs) {
 }
 ```
 
+even better, you can ask Onodrim to take care of the jobs execution. Onodrim will run them and keep and ordered copy of the results
+```java
+class JobImpl implements JobEntryPoint {
+    @Override
+    public void startJob() {
+        Job job = Onodrim.getCurrentThreadJob();
+        Configuration conf = job.getConfiguration();
+        try {
+            int p1 = conf.getIntParameter("Parameter1");
+            int p2 = conf.getIntParameter("Parameter2");
+            job.addResult("R1", p1*p2);
+        } catch (ConfigurationException exception) {
+            job.setErrorInExecution("Error when reading conf: " + exception.getMessage(), exception);
+        }
+    }
+}
+...
+Onodrim.runJobs(new File("test.properties"), new JobImpl());
+```
+
 **Is that all?** No :) .
 - Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.
 - It also allows to organize the results in handy tables for easy analysis.
@@ -56,7 +76,6 @@ A more detailed description of how to use Onodrim is available in the [Onodrim w
 
 Requirements, Download & Installation
 =====================================
-
 Onodrim requires Java v1.6 (at least). Also, [Ant](http://ant.apache.org/ (v1.6.0 at least) will be handy to compile the source code and generate its Javadoc documentation.
 
 **Cloning through git** A git repository of Onodrim is available in [github](https://github.com/lrodero/onodrim). You can clone to get Onodrim sources and then compile them by running the following commands:
