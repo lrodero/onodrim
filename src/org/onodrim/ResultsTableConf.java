@@ -156,7 +156,7 @@ public class ResultsTableConf {
         FIRST,
         /** Get the last value of all results */
         LAST,
-        /** Get a random value among all results */
+        /** Choose a random value among all results */
         RANDOM,
         /** Build a string concatenating all values */
         CONCAT

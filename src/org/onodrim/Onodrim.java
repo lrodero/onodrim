@@ -43,7 +43,7 @@ public class Onodrim {
 
     /**
      * Used to associated {@link Job} instances to the threads that are running them. See methods
-     * {@link #getPresentJob()}, {@link #registerThreadJob(Job)} and {@link #unregisterThreadJob(Job)}.
+     * {@link #getCurrentThreadJob()}, {@link #registerThreadJob(Job)} and {@link #unregisterThreadJob(Job)}.
      */
     private static InheritableThreadLocal<Job> threadJobMap = new InheritableThreadLocal<Job>();
 
@@ -79,7 +79,8 @@ public class Onodrim {
      * This method just wraps a call to {@link JobsSet#JobsSet(Properties, JobEntryPoint)} method.
      *
      * @param confProperties Used to generate Onodrim and jobs configurations 
-     * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run 
+     * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run.
+     *                   It can be {@code null}, but then Onodrim will not be able to run automatically this set.
      * @return Instance of {@link JobsSet} created using the configuration in the {@code Properties} instance. 
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      * 
@@ -87,6 +88,16 @@ public class Onodrim {
      */
     public static JobsSet buildJobsSet(Properties confProperties, JobEntryPoint entryPoint) throws ConfigurationException {
         return new JobsSet(confProperties, entryPoint);
+    }
+    
+    /**
+     * Similar to calling {@link #buildJobsSet(Properties, JobEntryPoint)} using {@code null} as the {@code JobEntryPoint} 
+     * @param confProperties
+     * @return
+     * @throws ConfigurationException
+     */
+    public static JobsSet buildJobsSet(Properties confProperties) throws ConfigurationException {
+    	return buildJobsSet(confProperties, null);
     }
 
     /**
@@ -102,7 +113,8 @@ public class Onodrim {
      *
      * @param confFile This file will be read to generate the base configuration that will be used
      *                 to generate all jobs and Onodrim configuration. 
-     * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run 
+     * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run.
+     *                   It can be {@code null}, but then Onodrim will not be able to run automatically this set.
      * @return Instance of {@link JobsSet} created using the configuration stored in the file passed as parameter. 
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      * 
@@ -110,6 +122,16 @@ public class Onodrim {
      */
     public static JobsSet buildJobsSet(File confFile, JobEntryPoint entryPoint) throws ConfigurationException {
         return new JobsSet(confFile, entryPoint);
+    }
+    
+    /**
+     * Similar to calling {@link #buildJobsSet(File, JobEntryPoint)} using {@code null} as the {@code JobEntryPoint}
+     * @param confFile
+     * @return
+     * @throws ConfigurationException
+     */
+    public static JobsSet buildJobsSet(File confFile) throws ConfigurationException {
+    	return buildJobsSet(confFile, null);
     }
 
     /**
@@ -138,7 +160,7 @@ public class Onodrim {
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      */
     public static void runJobs(File confFile, JobEntryPoint entryPoint) throws JobExecutionException, ConfigurationException {
-        Onodrim.buildJobsSet(confFile, entryPoint).runJobs();
+    	Onodrim.buildJobsSet(confFile, entryPoint).runJobs();
     }
 
     /**
@@ -200,22 +222,6 @@ public class Onodrim {
     }
 
     /**
-     * During the execution of a job, the running thread can use this method to get in which folder
-     * all the job relevant information will be stored, such as its configuration and results. If the
-     * job code means to save ant other information, it should do it also in that folder.
-     * 
-     * This method wraps a call to {@code Onodrim.getPresentJob().getResultsDir()}
-     * 
-     * @return Folder where all the job results will be stored 
-     * 
-     * @see #getPresentJob()
-     * @see Job#getJobResultsDir()
-     */
-    public static File getResultsDir() {
-        return Onodrim.getPresentJob().getJobResultsDir();
-    }
-
-    /**
      * Utility method that reads the present {@link Job} configuration ('present job' refers to the one
      * being run by the calling thread) and stores it in the given object instance. The class object
      * must be annotated to set which fields correspond to which configuration parameters.
@@ -226,7 +232,7 @@ public class Onodrim {
      * @throws ConfigurationException some error prevented to write the configuration on the object instance
      */
     public static void setConfByAnnotations(Object object) throws ConfigurationException {
-        Onodrim.setConfByAnnotations(object, Onodrim.getPresentJob().getConfiguration());
+        Onodrim.setConfByAnnotations(object, Onodrim.getCurrentThreadJob().getConfiguration());
     }
 
     /**
@@ -307,8 +313,8 @@ public class Onodrim {
             if(threadJobMap.get() == null) // Consistency check
                 throw new Error("Thread " + Thread.currentThread().getName() + " has no job associated");
             if(threadJobMap.get() != job) // Consistency check
-                throw new Error("Thread " + Thread.currentThread().getName() + " is associated to job " + threadJobMap.get().getJobIndex() 
-                                + ", but Onodrim thought it was associated with job " + job.getJobIndex());
+                throw new Error("Thread " + Thread.currentThread().getName() + " is associated to job " + threadJobMap.get().getIndex() 
+                                + ", but Onodrim thought it was associated with job " + job.getIndex());
             threadJobMap.remove();
         }
     }
@@ -322,7 +328,7 @@ public class Onodrim {
      * 
      * @return {@link Job} associated with the calling thread.
      */
-    public static Job getPresentJob() {
+    public static Job getCurrentThreadJob() {
         synchronized (threadJobMap) {
             return threadJobMap.get();
         }

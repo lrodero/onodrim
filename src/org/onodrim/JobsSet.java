@@ -59,8 +59,8 @@ public class JobsSet {
     public static final String PARAMS_IN_RESULTS_DIR_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".paramsInResultsDirName";
     private static final boolean DEFAULT_CLEAN_ALL_PREV_RESULTS = true;
     public static final String CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".cleanAllPrevResults";
-    private static final boolean DEFAULT_CLEAN_JOB_PREV_RESULTS = true;
-    public static final String CLEAN_JOB_PREV_RESULTS_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".cleanJobPrevResults";
+    private static final boolean DEFAULT_OVERWRITE_JOB_PREV_RESULTS = true;
+    public static final String OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".overwriteJobPrevResults";
     private static final int DEFAULT_PARALLEL_JOBS = 1;
     public static final String PARALLEL_JOBS_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".parallel";
     public static final boolean DEFAULT_BLOCK_UNTIL_FINISHED = false;
@@ -104,7 +104,7 @@ public class JobsSet {
      * exists, those results should be replaced with a new experiment execution or
      * should be read as the {@link Job} execution result.
      */
-    private boolean cleanJobPrevResults = DEFAULT_CLEAN_JOB_PREV_RESULTS;
+    private boolean overwriteJobPrevResults = DEFAULT_OVERWRITE_JOB_PREV_RESULTS;
     /**
      * Number of jobs to be run in parallel, i.e. number of threads that should
      * run in parallel to execute the {@link Job}s.
@@ -133,7 +133,7 @@ public class JobsSet {
      * are run, the {@link JobsExecutor} will use the entry point given (which should contain each {@link Job}
      * functionality)
      * @param jobsConfsPropsFile 
-     * @param jobsEntryPoint 
+     * @param jobsEntryPoint It can be {@code null}, but then Onodrim will not be able to run automatically this set
      * @throws ConfigurationException Raised if the jobs configuration could not be built
      */
     public JobsSet(File jobsConfsPropsFile, JobEntryPoint jobsEntryPoint) throws ConfigurationException {
@@ -145,7 +145,7 @@ public class JobsSet {
      * are run, the {@link JobsExecutor} will use the entry point given (which should contain each {@link Job}
      * functionality)
      * @param jobsConfsProps
-     * @param jobsEntryPoint
+     * @param jobsEntryPoint It can be {@code null}, but then Onodrim will not be able to run automatically this set
      * @throws ConfigurationException Raised if the jobs configuration could not be built
      */
     public JobsSet(Properties jobsConfsProps, JobEntryPoint jobsEntryPoint) throws ConfigurationException {
@@ -237,14 +237,14 @@ public class JobsSet {
         cleanAllPrevResults = jobsConf.getBooleanParameter(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME, cleanAllPrevResults);
         jobsConf.remove(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME);
 
-        cleanJobPrevResults = jobsConf.getBooleanParameter(CLEAN_JOB_PREV_RESULTS_PROPERTY_NAME, cleanJobPrevResults);
-        jobsConf.remove(CLEAN_JOB_PREV_RESULTS_PROPERTY_NAME);
+        overwriteJobPrevResults = jobsConf.getBooleanParameter(OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME, overwriteJobPrevResults);
+        jobsConf.remove(OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME);
 
-        if(cleanAllPrevResults && !cleanJobPrevResults) {
+        if(cleanAllPrevResults && !overwriteJobPrevResults) {
             logger.log(Level.WARNING, "Cannot set '" + CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME +"' to true and " +
-                    "'" + CLEAN_JOB_PREV_RESULTS_PROPERTY_NAME + "' to false");
+                    "'" + OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME + "' to false");
             throw new ConfigurationException("Cannot set '" + CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME +"' to true and " +
-                    "'" + CLEAN_JOB_PREV_RESULTS_PROPERTY_NAME + "' to false");
+                    "'" + OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME + "' to false");
         }
 
         parallelJobs = jobsConf.getIntParameter(PARALLEL_JOBS_PROPERTY_NAME, parallelJobs);
@@ -287,10 +287,8 @@ public class JobsSet {
     
     private void buildJobs(List<Configuration> configurations, JobEntryPoint jobsEntryPoint) {
 
-        if(jobsEntryPoint == null) {
-            logger.log(Level.WARNING, "Tried to create a new set of job configurations with null " + JobEntryPoint.class.getCanonicalName() + " instance");
-            throw new IllegalArgumentException("Tried to create a new set of job configurations with null " + JobEntryPoint.class.getCanonicalName() + " instance");
-        }
+        if(jobsEntryPoint == null)
+            logger.log(Level.WARNING, "Trying to create a new set of job configurations with null " + JobEntryPoint.class.getCanonicalName() + " instance");
         
         jobs = new ArrayList<Job>();
         for(int jobIndex = 1; jobIndex <= configurations.size(); jobIndex++) {
@@ -311,11 +309,16 @@ public class JobsSet {
     }
 
     public void runJobs(JobsExecutionWatcher watcher) throws JobExecutionException {
+    	
+    	for(Job job: jobs)
+    		if(job.jobEntryPointIsNull())
+    			throw new IllegalStateException("Some (of all) jobs were build without a " + JobEntryPoint.class.getName() +
+    					                        " instance, Onodrim cannot run them automatically");
 
         if(isRunning())
             throw new IllegalStateException("Jobs are already being run");
 
-        // Creating all results dir (if it already exists, nothing will be done)
+        // Creating all results dir (if it already exists it will be recreated, unless users set it otherwise)
         createAllResultsDir();
         
         // Saving configuration
@@ -354,7 +357,7 @@ public class JobsSet {
         }
         
         // Now, a bit of checking. It is necessary to keep results from previous jobs?
-        if(!cleanJobPrevResults) {
+        if(!overwriteJobPrevResults) {
             // If there are results of previous jobs we have to keep them.
             // So it goes like this: we now read the configuration and results of
             // each one of the previous jobs, then we check in the configurations
@@ -398,7 +401,7 @@ public class JobsSet {
                             // First, reading those results
                             File prevJobResultsFile = new File(folderInAllResultsDir, Job.SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
                             logger.log(Level.FINE, "Results from previous execution found in file " + prevJobResultsFile.getAbsolutePath()
-                                                    + ", loading them and discarding job " + jobToRun.getJobIndex());
+                                                    + ", loading them and discarding job " + jobToRun.getIndex());
                             jobToRun.discardAndLoadResulfsFromFile(prevJobResultsFile);
                             jobsCopy.remove(jobToRun);
                             break;
@@ -456,7 +459,7 @@ public class JobsSet {
             if(table == null)
                 htmlTable = "<b>Some error found when creating results table, it could be that not all params were defined</b>";
             else
-                htmlTable = table.toHTMLTable();
+                htmlTable = table.toHTML();
 
             // Writing table to file
             File htmlTableFile = new File(allResultsDir, tableConf.getResultFileName() + ".html");
@@ -473,12 +476,12 @@ public class JobsSet {
     }
 
     protected synchronized void jobStarted(Job job) {
-        logger.log(Level.FINE, "Job " + job.getJobIndex() + " started");
+        logger.log(Level.FINE, "Job " + job.getIndex() + " started");
         jobsRunning.add(job);
     }
 
     protected synchronized void jobFinished(Job job) {
-        logger.log(Level.FINE, "Job " + job.getJobIndex() + " finished");
+        logger.log(Level.FINE, "Job " + job.getIndex() + " finished");
         jobsRunning.remove(job);
         jobsRun.add(job);
     }

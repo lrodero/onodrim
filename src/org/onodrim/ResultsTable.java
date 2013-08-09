@@ -60,7 +60,7 @@ public class ResultsTable {
      * values will be printed using {@code \<td\>}.   
      * @return The table contents as an HTML table.
      */
-    public String toHTMLTable() {
+    public String toHTML() {
         
         if(cells == null)
             return null;
@@ -103,6 +103,14 @@ public class ResultsTable {
         return null;
     }
     
+    /**
+     * This method filters out failed jobs, then reads the configuration of the remaining ones
+     * to prepare the parameters to call iteratively to {@link #buildResultsTable(ResultsTableConf, Map, Map)}
+     * (once per table configuration in the list).
+     * @param jobs
+     * @param tablesConfs
+     * @return
+     */
     public static List<ResultsTable> buildResultsTables(List<Job> jobs, List<ResultsTableConf> tablesConfs) {
         
         List<ResultsTable> tables = new ArrayList<ResultsTable>();
@@ -153,7 +161,24 @@ public class ResultsTable {
     }
     
     /**
-     * It creates a {@link ResultsTable} instance that contains the results passed as parameter.
+     * This method just creates a list to store the table configuration instance and then
+     * calls to {@link #buildResultsTables(List, List)}. That call will return a list with
+     * a single table, which will be returned to the caller.
+     * @param jobs
+     * @param resultsTableConf
+     * @return
+     */
+    public static ResultsTable buildResultsTable(List<Job> jobs, ResultsTableConf resultsTableConf) {
+    	List<ResultsTableConf> tablesConfs = new ArrayList<ResultsTableConf>();
+    	tablesConfs.add(resultsTableConf);
+    	List<ResultsTable> tables = buildResultsTables(jobs, tablesConfs);
+    	return tables.get(0);
+    }
+    
+    /**
+     * It creates a {@link ResultsTable} instance that contains the results passed as parameter. This
+     * factory builds the matrix of Strings once, making it available for subsequent calls to print
+     * functions (e.g. {@link #toHTML()}).
      * @param resultsTableConf Configuration of the table to print
      * @param paramsValues All possible values of the parameters used
      * @param resultsMap Association of parameters to results

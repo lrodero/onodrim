@@ -51,7 +51,7 @@ public class Job implements Runnable {
     /**
      * Index of job in the set to be executed (each job belongs to one set)
      */
-    private int jobIndex = -1;
+    private int index = -1;
     /**
      * Set this job belongs to
      */
@@ -60,11 +60,11 @@ public class Job implements Runnable {
      * When this job is executed, it will call to the {@link JobEntryPoint#startJob()} method of
      * this instance
      */
-    private JobEntryPoint jobEntryPoint = null;
+    private JobEntryPoint entryPoint = null;
     /**
      * Folder where this job results will be stored
      */
-    private File jobResultsDir = null;
+    private File resultsDir = null;
     /**
      * Flag that signals whether this job has already been started
      */
@@ -81,6 +81,11 @@ public class Job implements Runnable {
      * In case there was an error, this string should store a description of what happened
      */
     private String errorInExecutionMsg = null;
+    /**
+     * In case there was an error, and it was caused by an exception (or any throwable instance),
+     * it should be stored here
+     */
+    private Throwable errorInExecutionCause = null;
     /**
      * Mapping of results names and values of this job
      */
@@ -108,20 +113,18 @@ public class Job implements Runnable {
             throw new IllegalArgumentException("Cannot create a job instance with a null configuration");
         if(jobsSet == null)
             throw new IllegalArgumentException("Cannot create a job instance that does not belong to a job set");
-        if (jobEntryPoint == null)
-            throw new IllegalArgumentException("Cannot create a job instance with a null entry point");
         if (jobResultsDir == null)
             throw new IllegalArgumentException("Cannot create a job instance with a null dir to store results");
         if(jobIndex < 0)
             throw new IllegalArgumentException("Cannot create a job with a negative index");
         this.conf = conf;
-        this.jobIndex = jobIndex;
+        this.index = jobIndex;
         this.jobsSet = jobsSet;
-        this.jobEntryPoint = jobEntryPoint;
-        this.jobResultsDir = jobResultsDir;
+        this.entryPoint = jobEntryPoint;
+        this.resultsDir = jobResultsDir;
         // Just in case, checking no other experiment with the same index is already in the set
         for(Job job: jobsSet.getJobs())
-            if(job.getJobIndex() == jobIndex)
+            if(job.getIndex() == jobIndex)
                 throw new IllegalArgumentException("Cannot add a new job with index '" + jobIndex + "', there is already one job with that index in the same set");
     }
 
@@ -137,8 +140,8 @@ public class Job implements Runnable {
      * Index in the {@link JobsSet} this job belongs to.
      * @return Index in the {@link JobsSet} this job belongs to.
      */
-    public int getJobIndex() {
-        return jobIndex;
+    public int getIndex() {
+        return index;
     }
     
     /**
@@ -153,8 +156,8 @@ public class Job implements Runnable {
      * Returns the folder this job results must be stored into.
      * @return Folder to store results into.
      */
-    public File getJobResultsDir() {
-        return jobResultsDir;
+    public File getResultsDir() {
+        return resultsDir;
     }
 
     /**
@@ -185,12 +188,23 @@ public class Job implements Runnable {
     }
 
     /**
-     * Used to signal that this Job execution failed.
-     * @param errorInExecutionMsg Description of the error found when executing the experiment, it can be null
+     * It calls to {@link #setErrorInExecution(String, Throwable)}, passing {@code null}
+     * as the throwable instance.
      */
     public void setErrorInExecution(String errorInExecutionMsg) {
+    	setErrorInExecution(errorInExecutionMsg, null);
+    }
+
+    /**
+     * Used to signal that this Job execution failed.
+     * @param errorInExecutionMsg Description of the error found when executing the experiment, it can be null
+     * @param errorInExecutionCause If the problem was caused by any exception, it can be stored here. If there
+     *                              is not such exception/error, just set it here {@code null}.
+     */
+    public void setErrorInExecution(String errorInExecutionMsg, Throwable errorInExecutionCause) {
         this.errorInExecution = true;
         this.errorInExecutionMsg = errorInExecutionMsg;
+        this.errorInExecutionCause = errorInExecutionCause;
     }
 
     /**
@@ -249,34 +263,34 @@ public class Job implements Runnable {
         
         if(discard) {
             // Well, it could be that the job results directory is not present, in that case we have to create it
-            if(!jobResultsDir.exists()) {
-                logger.log(Level.FINE, "Job " + jobIndex + " discarded, just creating results folder");
-                if(!jobResultsDir.mkdirs()) {
-                    logger.log(Level.SEVERE, "Could not create results directory '" + jobResultsDir.getAbsolutePath() + "'");
-                    throw new Error("Could not create results directory '" + jobResultsDir.getAbsolutePath() + "'");
+            if(!resultsDir.exists()) {
+                logger.log(Level.FINE, "Job " + index + " discarded, just creating results folder");
+                if(!resultsDir.mkdirs()) {
+                    logger.log(Level.SEVERE, "Could not create results directory '" + resultsDir.getAbsolutePath() + "'");
+                    throw new Error("Could not create results directory '" + resultsDir.getAbsolutePath() + "'");
                 }
             } else
-                logger.log(Level.FINE, "Job " + jobIndex + " discarded");
+                logger.log(Level.FINE, "Job " + index + " discarded");
             return;
         }
 
-        logger.log(Level.FINE, "Running pre-execution of job " + jobIndex);
+        logger.log(Level.FINE, "Running pre-execution of job " + index);
 
         // Removing previous experiment results
-        logger.log(Level.FINE, "Removing folder with previous execution results '" + jobResultsDir.getAbsolutePath() + "' (if any)");
-        if(!Util.removeDirRecursively(jobResultsDir)) {
-            logger.log(Level.SEVERE, "Could not remove previous results directory '" + jobResultsDir.getAbsolutePath() + "'");
-            throw new Error("Could not remove previous results directory '" + jobResultsDir.getAbsolutePath() + "'");
+        logger.log(Level.FINE, "Removing folder with previous execution results '" + resultsDir.getAbsolutePath() + "' (if any)");
+        if(!Util.removeDirRecursively(resultsDir)) {
+            logger.log(Level.SEVERE, "Could not remove previous results directory '" + resultsDir.getAbsolutePath() + "'");
+            throw new Error("Could not remove previous results directory '" + resultsDir.getAbsolutePath() + "'");
         }
-        if (!jobResultsDir.mkdirs()) {
-            logger.log(Level.SEVERE, "Could not create results directory '" + jobResultsDir.getAbsolutePath() + "'");
-            throw new Error("Could not create results directory '" + jobResultsDir.getAbsolutePath() + "'");
+        if (!resultsDir.mkdirs()) {
+            logger.log(Level.SEVERE, "Could not create results directory '" + resultsDir.getAbsolutePath() + "'");
+            throw new Error("Could not create results directory '" + resultsDir.getAbsolutePath() + "'");
         }
 
         // Storing job configuration in corresponding file, if a conf file from
         // a previous execution
         // exists it will be overwritten
-        File fileToStoreConf = new File(jobResultsDir, CONFIG_STORE_FILE_NAME);
+        File fileToStoreConf = new File(resultsDir, CONFIG_STORE_FILE_NAME);
         try {
             conf.saveInFile(fileToStoreConf);
         } catch (IOException exception) {
@@ -296,37 +310,43 @@ public class Job implements Runnable {
      */
     protected void postExecutionProcess(Throwable throwable) {
 
-        logger.log(Level.FINE, "Job " + jobIndex + " finished, running after-execution process");
+        logger.log(Level.FINE, "Job " + index + " finished, running after-execution process");
 
         if ((throwable != null) || errorInExecution)
             try {
                 // Something went wrong when running the job, we record error
                 // message in file for user check.
-                File failedExecutionReportFile = new File(jobResultsDir, FAILED_EXECUTION_REPORT_FILE_NAME);
-                logger.log(Level.INFO, "Job " + jobIndex + " execution failed, recording failure information in file "
+                File failedExecutionReportFile = new File(resultsDir, FAILED_EXECUTION_REPORT_FILE_NAME);
+                logger.log(Level.INFO, "Job " + index + " execution failed, recording failure information in file "
                                         + failedExecutionReportFile.getAbsolutePath());
                 PrintWriter writer = new PrintWriter(failedExecutionReportFile);
                 if (throwable != null) {
-                    writer.println("Exception caught when running experiment: " + throwable.getMessage());
+                    writer.println("(Non processed) exception caught when running experiment: " + throwable.getMessage());
                     throwable.printStackTrace(writer);
-                } else
+                } else {
                     writer.println("Execution was not successful, recorded error message:\n" + errorInExecutionMsg);
+                    if(errorInExecutionCause != null) {
+                    	writer.println("Cause: ");
+                    	writer.println(errorInExecutionCause.getMessage());
+                    	errorInExecutionCause.printStackTrace(writer);
+                    }
+                }
                 writer.close();
             } catch (IOException ioException) {
-                logger.log(Level.SEVERE, "Could not store error message for job " + jobIndex
+                logger.log(Level.SEVERE, "Could not store error message for job " + index
                                         + ", IOException caught", ioException);
-                throw new Error("Could not store error message for job " + jobIndex
+                throw new Error("Could not store error message for job " + index
                                 + ", IOException caught", ioException);
             }
         else
             try {
                 // Storing results
-                File successfulExecutionReportFile = new File(jobResultsDir, SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
+                File successfulExecutionReportFile = new File(resultsDir, SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
                 if(discard)
-                    logger.log(Level.INFO, "Job " + jobIndex + " was discarded, storing results in file "
+                    logger.log(Level.INFO, "Job " + index + " was discarded, storing results in file "
                                             + successfulExecutionReportFile.getAbsolutePath());
                 else
-                    logger.log(Level.INFO, "Job " + jobIndex + " execution successful, storing results in file "
+                    logger.log(Level.INFO, "Job " + index + " execution successful, storing results in file "
                                             + successfulExecutionReportFile.getAbsolutePath());
                 PrintWriter writer = new PrintWriter(successfulExecutionReportFile);
                 writer.println("# " + new Date().toString() + " #");
@@ -334,10 +354,19 @@ public class Job implements Runnable {
                     writer.println(resultName + "=" + results.get(resultName));
                 writer.close();
             } catch (IOException ioException) {
-                logger.log(Level.SEVERE, "Could not store results of job " + jobIndex + ", IOException caught",
+                logger.log(Level.SEVERE, "Could not store results of job " + index + ", IOException caught",
                             ioException);
-                throw new Error("Could not store results of job " + jobIndex + ", IOException caught", ioException);
+                throw new Error("Could not store results of job " + index + ", IOException caught", ioException);
             }
+    }
+    
+    /**
+     * This is used to make sure all jobs have the entry point properly set before 
+     * proceeding with the automated execution.
+     * @return
+     */
+    protected boolean jobEntryPointIsNull() {
+    	return (entryPoint == null);
     }
 
     /**
@@ -349,12 +378,11 @@ public class Job implements Runnable {
     public void run() {
 
         if (discard) {
-            logger.log(Level.FINE, "Job " + jobIndex + " discarded, nothing to do");
+            logger.log(Level.FINE, "Job " + index + " discarded, nothing to do");
             return;
         }
             
-
-        logger.log(Level.FINE, "Starting job " + jobIndex);
+        logger.log(Level.FINE, "Starting job " + index);
 
         boolean illegalState = false;
         stateLock.lock();
@@ -362,10 +390,10 @@ public class Job implements Runnable {
             illegalState = true;
         alreadyStarted = true;
         stateLock.unlock();
-        if (illegalState)
-            throw new IllegalStateException("Job " + jobIndex + " was already started");
+        if (illegalState) // This should not happen ever
+            throw new IllegalStateException("Job " + index + " was already started");
 
-        jobEntryPoint.startJob(); // Well, finally! Running job!!
+        entryPoint.startJob(); // Well, finally! Running job!!
 
         finished = true;
 

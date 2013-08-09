@@ -120,7 +120,7 @@ class JobsExecutor extends ThreadPoolExecutor {
 
         Job job = (Job) runnable;
 
-        thread.setName("T" + thread.getId() + "-J" + Job.indexAsString(job.getJobIndex(), jobsSet.getTotalJobsCount()));
+        thread.setName("T" + thread.getId() + "-J" + Job.indexAsString(job.getIndex(), jobsSet.getTotalJobsCount()));
 
         // Updating thread map to associate the job (and so its configuration)
         // to this thread and its descendants
@@ -163,7 +163,7 @@ class JobsExecutor extends ThreadPoolExecutor {
 
         Onodrim.unregisterThreadJob(job);
 
-        logger.log(Level.FINE, "After-execution process for job " + job.getJobIndex() + " done");
+        logger.log(Level.FINE, "After-execution process for job " + job.getIndex() + " done");
     }
 
     @Override

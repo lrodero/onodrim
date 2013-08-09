@@ -18,20 +18,19 @@
 # This file intends to give a brief overview of the parameters that can be
 # used to tune Onodrim behaviour
 
-################################################################
-## Properties used by Onodrim itself, with its default values ##
-################################################################
+############################################################################
+## List of all properties used by Onodrim itself, with its default values ##
+############################################################################
 #onodrim.valuesSeparator=;
-#onodrim.groupConfsBy=
 #onodrim.repetitions=1
 #onodrim.packets=
-#onodrim.ignoreDefaultPacket=false
+#onodrim.groupConfsBy=
 #onodrim.generateParametersValuesCondition=
 #onodrim.boundParameters=
 #onodrim.jobs.allResultsDir=results
-#onodrim.jobs.paramsInResultsDirName=true
+#onodrim.jobs.paramsInResultsDirName=
 #onodrim.jobs.cleanAllPrevResults=true
-#onodrim.jobs.cleanJobPrevResults=true
+#onodrim.jobs.overwriteJobPrevResults=true
 #onodrim.jobs.parallel=1
 #onodrim.jobs.tablesResults=
 
@@ -58,11 +57,27 @@
 ## Onodrim will create two configurations:
 ## 1-> Param1=a
 ## 2-> Param1=b
-## Now we set onodrim.repetitions=2, then we will have the following configurations: 
+## Now if we set onodrim.repetitions=2, then we will have the following configurations: 
 ## 1 -> Param1=a   
 ## 2 -> Param1=a   
 ## 3 -> Param1=b    
 ## 4 -> Param1=b
+
+######################################
+## Usage example of onodrim.packets ##
+######################################
+## This is used to generate configurations by 'packets', where different parameters belong
+## to different packets. Let's assume we have this definition of parameters:
+# P1.Param1=a
+# P1.Param2=1;2
+# P2.Param3=X;Y
+## If we tell Onodrim that the packets are 'P1' and 'P2' (onodrim.packets={P1,P2})
+## then we'll get these configurations:
+## 1-> P1.Param1=a P1.Param2=1 
+## 2-> P1.Param1=a P1.Param2=2 
+## 3-> P2.Param3=X 
+## 4-> P2.Param4=Y
+NOTE: The parameters that do not belong to any of the defined packets will be assigned to all jobs.
 
 ###########################################
 ## Usage example of onodrim.groupConfsBy ##
@@ -81,41 +96,6 @@
 ## 2-> Param1=b Param2=1
 ## 3-> Param1=a Param2=2
 ## 4-> Param1=b Param2=2
-
-######################################
-## Usage example of onodrim.packets ##
-######################################
-## This is used to generate configurations by 'packets', where different parameters belong
-## to different packets. Let's assume we have this definition of parameters:
-# P1.Param1=a
-# P1.Param2=1;2
-# P2.Param3=X;Y
-## If we tell Onodrim that the packets are 'P1' and 'P2' (onodrim.packets={P1,P2}
-## then we'll get these configurations:
-## 1-> P1.Param1=a P1.Param2=1 
-## 2-> P1.Param1=a P1.Param2=2 
-## 3-> P2.Param3=X 
-## 3-> P2.Param4=Y
-## NOTE: The parameters that do not belong to any of the defined packets belong
-## to a 'default' packet. Also, the 'ALL' package is for parameters that belong
-## to all packets, including the default one (and so to all configurations!)
-## If we have these parameters:
-# P1.Param1=a
-# P1.Param2=1;2
-# P2.Param3=X;Y
-# ALL.Param4=Z
-# Then these would be the configurations created:
-## 1-> ALL.Param4=Z
-## 2-> P1.Param1=a P1.Param2=1 ALL.Param4=Z  
-## 3-> P1.Param1=a P1.Param2=2 ALL.Param4=Z 
-## 4-> P2.Param3=X ALL.Param4=Z 
-## 5-> P2.Param4=Y ALL.Param4=Z
-
-##################################################
-## Usage example of onodrim.ignoreDefaultPacket ##
-##################################################
-## If set to 'true', the configuration of the default packet
-## is not generated.
 
 ################################################################
 ## Usage example of onodrim.generateParametersValuesCondition ##
@@ -189,18 +169,16 @@
 # onodrim.jobs.cleanAllPrevResults=true
 ## would force Onodrim to delete the 'experimentsResults' folder if present.
 
-#######################################################
-## Usage example of onodrim.jobs.cleanJobPrevResults ##
-#######################################################
+###########################################################
+## Usage example of onodrim.jobs.overwriteJobPrevResults ##
+###########################################################
 ## Before a job is run, it is checked whether there are results of a previous
 ## execution of a job with the same configuration (they are looked for in all
 ## subfolders of folder onodrim.jobs.allResultsDir). If so, this parameter sets
 ## what to do, when set to 'true' those results will be removed and the job will
 ## be executed normally. If set to 'false', the job is not executed but the
 ## results of the previous execution are assigned to it.
-## It could be that each configuration must be repeated several times, (see parameter
-## onodrim.repetitions), in such case results from
-
+##
 ## If this parameter is false then the onodrim.jobs.cleanAllPrevResults parameter
 ## must be set to false as well!
 
@@ -215,20 +193,23 @@
 #onodrim.jobs.parallel=2
 ## would tell Onodrim to start two parallel threads to run jobs.
 
-############################################
-## Usage example of onodrim.jobs.parallel ##
-############################################
-## Please check the javadoc! :| .
-## For example:
+#################################################
+## Usage example of onodrim.jobs.tablesResults ##
+#################################################
+## Please check the wiki https://github.com/lrodero/onodrim/wiki/C6-Building-Tables-of-Results ;) .
+## 
+## Example:
 #onodrim.jobs.tablesResults={P1.Prop1;P1.Prop2:P1.Prop3|P1.Prop4|Result|CONCAT}
 ## would tell Onodrim to generate one table from the results labeled 'Result', (if several are found
 ## for the same parameters values in the table, results will be CONCATenated).
-## For example:
+## 
+## Example:
 # Param1=1
 # Param2=a;b
 # Param3=x;y
 # Param4=o
 # onodrim.repetitions=2  <-- be aware each configuration will be run twice!
+# onodrim.jobs.tablesResults={Param1;Param2:Param3|Param4|Result|CONCAT}
 ## let's assume each job outputs as 'Result' simply the values of the parameters in uppercase and concatenated. Then the
 ## table will look like:
 #         Param1                    1                    1

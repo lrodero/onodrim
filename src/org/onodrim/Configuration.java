@@ -59,9 +59,7 @@ import java.util.regex.Pattern;
  * @author Luis Rodero-Merino
  * @since 1.0
  */
-public class Configuration extends Properties {
-    
-    // TODO: Unify notation, now code refers to 'properties' and 'parameters' and is confusing. Use only 'parameters' 
+public class Configuration extends Properties { 
 
     private static final long serialVersionUID = 1L;
     // How configurations must be read can be set in the properties object sent
@@ -108,13 +106,7 @@ public class Configuration extends Properties {
      * to any other packet by the user (if no packet is defined by the user, then all configurations
      * will below to this default packet). 
      */
-    public static final String DEFAULT_PACKET_NAME = "ONODRIM_DEFAULT_PACKET";
-    
-    /**
-     * If there are several packets it could be that the user does not want the default packet to be run, only the
-     * ones she has defined. In such case this flag will be false.
-     */
-    public static final boolean RUN_DEFAULT_PACKET = true;
+    public static final String DEFAULT_PACKET_NAME = "NO_PACKET";
     
     public static final String PACKET_AND_PARAM_NAMES_SEPARATOR = ".";
     
@@ -189,7 +181,6 @@ public class Configuration extends Properties {
         return super.containsKey(parameterName);
     }
 
-    // TODO: Change name of getParameter to getValue
     /**
      * Get the value of some parameter if it is defined. If not, return
      * {@code null}.
@@ -1116,9 +1107,9 @@ public class Configuration extends Properties {
         while (filteredConfsIter.hasNext()) {
             Configuration conf = filteredConfsIter.next();
             for (ParamValueBinding paramBinding : paramsValuesBindings) {
-                System.out.println("Checking binding: "
-                            +paramBinding.getFirstParamValue().getParameter()+"="+paramBinding.getFirstParamValue().getValue()+"<->"
-                            +paramBinding.getSecondParamValue().getParameter()+"="+paramBinding.getSecondParamValue().getValue());
+                //System.out.println("Checking binding: "
+                //            +paramBinding.getFirstParamValue().getParameter()+"="+paramBinding.getFirstParamValue().getValue()+"<->"
+                //            +paramBinding.getSecondParamValue().getParameter()+"="+paramBinding.getSecondParamValue().getValue());
                 // Maybe the generation configuration conditions lead to configurations where one or the two parameters in the binding
                 // are not present, such configurations MUST be ignored
                 if(!conf.containsKey(paramBinding.getFirstParamValue().getParameter()) || !conf.containsKey(paramBinding.getSecondParamValue().getParameter())) {
