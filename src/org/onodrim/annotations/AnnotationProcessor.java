@@ -122,8 +122,7 @@ public class AnnotationProcessor {
                         + " in instance of Class "
                         + object.getClass().getName()
                         + " must have one and only one parameter");
-            Object value = getParameter(parameterName, parameterTypes[0],
-                    configuration);
+            Object value = getParameter(parameterName, parameterTypes[0], configuration);
             try {
                 method.invoke(object, value);
             } catch (IllegalArgumentException exception) {
@@ -145,8 +144,7 @@ public class AnnotationProcessor {
         }
     }
 
-    private static Object getParameter(String parameterName,
-            Class<?> typeClass, Configuration configuration)
+    private static Object getParameter(String parameterName, Class<?> typeClass, Configuration configuration)
             throws ConfigurationException {
 
         if (!typeClass.isArray())

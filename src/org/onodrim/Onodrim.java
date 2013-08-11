@@ -38,8 +38,6 @@ import org.onodrim.annotations.AnnotationProcessor;
 public class Onodrim {
 
     public static final String PROJECT_NAME = "onodrim";
-    
-    private static Logger onodrimRootLogger = null; 
 
     /**
      * Used to associated {@link Job} instances to the threads that are running them. See methods
@@ -47,6 +45,9 @@ public class Onodrim {
      */
     private static InheritableThreadLocal<Job> threadJobMap = new InheritableThreadLocal<Job>();
 
+    /**
+     * This class cannot be instantiated.
+     */
     private Onodrim() {}
     
     /**
@@ -201,7 +202,7 @@ public class Onodrim {
     }
 
     /**
-     * Run the given {@link JobsSet} instance, notifying job events to the {@link JobsExecutionWatcher} instance.
+     * Run the given {@link JobsSet} instance.
      * 
      * @param jobsSet Jobs to run.
      * @throws JobExecutionException Raised if some problem is found when executing {@link Job}s
@@ -245,44 +246,6 @@ public class Onodrim {
      */
     public static void setConfByAnnotations(Object object, Configuration conf) throws ConfigurationException {
         AnnotationProcessor.setConfiguration(object, conf);
-    }
-
-    /**
-     * Utility method to set a quick logging configuration for Onodrim classes. Note Onodrim uses
-     * default logging Java framework ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}).
-     * 
-     * It wraps a call to {@code Onodrim.configDefaultLogger(false);}
-     */
-    public static void configDefaultLogger() {
-        configDefaultLogger(false);
-    }
-
-    /**
-     * Utility method to set a quick logging configuration for Onodrim classes. Note Onodrim uses
-     * default logging Java framework
-     * ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}).
-     * 
-     * @param forwardLogsToParentLoggers flag to set whether log messages should be forwarded to parent
-     * loggers or not.
-     */
-    public static void configDefaultLogger(boolean forwardLogsToParentLoggers) {
-        onodrimRootLogger = Logger.getLogger(Onodrim.class.getPackage().getName());
-        onodrimRootLogger.setLevel(Level.FINEST);
-        onodrimRootLogger.setUseParentHandlers(forwardLogsToParentLoggers);
-        StreamHandler streamHandler = Util.createStreamHandlerWithAutomaticFlushing(System.out, null);
-        
-        streamHandler.setLevel(Level.FINEST);
-        onodrimRootLogger.addHandler(streamHandler);
-    }
-    
-    /**
-     * Utility method that 'switches off' logging from Onodrim. Note Onodrim uses
-     * default logging Java framework ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}).
-     */
-    public static void switchOffOnodrimLogs() {
-        onodrimRootLogger = Logger.getLogger(Onodrim.class.getPackage().getName());
-        onodrimRootLogger.setLevel(Level.OFF);
-        onodrimRootLogger.setUseParentHandlers(false);
     }
 
     /**
@@ -331,6 +294,79 @@ public class Onodrim {
     public static Job getCurrentThreadJob() {
         synchronized (threadJobMap) {
             return threadJobMap.get();
+        }
+    }
+    
+    /**
+     * Class that groups some utility methods to speedup Onodrim log setting up. Note Onodrim uses
+     * default logging Java framework
+     * ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}). 
+     * You can set your own configuration and add your own handlers using the mechanisms provided by that
+     * framework, the methods in this class just group some common functionality. If you use those mechanisms by your own,
+     * then you don't need to use the methods defined here.
+     * 
+     * @author lrodero
+     */
+    public static class Log {
+
+        /**
+         * Logger associated to Onodrim root package, to capture all log messages sent by all classes
+         * in Onodrim.
+         */
+        private static Logger onodrimRootLogger = Logger.getLogger(Onodrim.class.getPackage().getName());
+        /**
+         * Uility logger that sends message to {@code System.out} and performs automatic flushing.
+         */
+        private static StreamHandler streamHandler = Util.createStreamHandlerWithAutomaticFlushing(System.out, null);
+
+        /**
+         * Utility method to set a quick logging configuration for Onodrim classes.
+         * It wraps a call to {@code Onodrim.configDefaultLogger(false);}
+         */
+        public static void enableOnodrimLogs() {
+            enableOnodrimLogs(false);
+        }
+
+        /**
+         * Utility method to set a quick logging configuration for Onodrim classes. Note Onodrim uses
+         * default logging Java framework
+         * ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}).
+         * The logger is configured so all log messages are processed.
+         * 
+         * @param forwardLogsToParentLoggers flag to set whether log messages should be forwarded to parent
+         * loggers or not. This is a convenient method to speed up Onodrim setup for quick tests.
+         */
+        public static void enableOnodrimLogs(boolean forwardLogsToParentLoggers) {
+            streamHandler.setLevel(Level.ALL);
+            onodrimRootLogger.setLevel(Level.ALL);
+            onodrimRootLogger.setUseParentHandlers(forwardLogsToParentLoggers);
+        }
+        
+        /**
+         * Add a utility console handler that prints logs in {@code System.out}, with auto-flushing enabled.
+         * Remember also to call to {@link #enableOnodrimLogs(boolean)}. This is a convenient method to speed
+         * up Onodrim setup for quick tests. 
+         */
+        public static void enableUtilConsoleLogger() {
+            onodrimRootLogger.addHandler(streamHandler);
+        }
+        
+        /**
+         * Utility method that 'switches off' logging from Onodrim. Note Onodrim uses
+         * default logging Java framework ({@link <a href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/package-frame.html"java.util.logging</a>}).
+         */
+        public static void disableOnodrimLogs() {
+            streamHandler.setLevel(Level.OFF);
+            onodrimRootLogger.setLevel(Level.OFF);
+            onodrimRootLogger.setUseParentHandlers(false);
+        }
+        
+        /**
+         * Remove the convenient console handler that was added to Onodrim logger by calling to
+         * {@link #enableUtilConsoleLogger()}.
+         */
+        public static void disableUtilConsoleLogger() {
+        	onodrimRootLogger.removeHandler(streamHandler);
         }
     }
 
