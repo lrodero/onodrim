@@ -1,7 +1,8 @@
-Onodrim
-=======
+Intro to Onodrim
+================
 
-(Contact at <onodrim.project@gmail.com>, if you use Onodrim please let me know! :) )
+(This is a brief introduction to Onodrim, more detailed info is available in [Onodrim wiki](https://github.com/lrodero/onodrim/wiki). Contact address is 
+ <onodrim.project@gmail.com>, if you use Onodrim please let me know! :) )
 
 Onodrim is a Java library that eases the configuration and collection of results of bunches of jobs (experiments, simulations...). Onodrim is handy when you need to run computations configured using several parameters, where each parameter can have different values, and where even the set of parameters can change. Also it organizes the results to ease their analysis.
 
