@@ -109,7 +109,7 @@ public class ResultsTable {
      * (once per table configuration in the list).
      * @param jobs
      * @param tablesConfs
-     * @return The {@link ResultTable}s created from the results of the jobs, one per each {@link ResultsTableConf}
+     * @return The {@link ResultsTable}s created from the results of the jobs, one per each {@link ResultsTableConf}
      * in the list passed as parameter.
      */
     public static List<ResultsTable> buildResultsTables(List<Job> jobs, List<ResultsTableConf> tablesConfs) {
@@ -167,7 +167,7 @@ public class ResultsTable {
      * a single table, which will be returned to the caller.
      * @param jobs
      * @param resultsTableConf
-     * @return A {@link ResultTable}s created from the results of the jobs, giving the instructions
+     * @return A {@link ResultsTable}s created from the results of the jobs, giving the instructions
      * in the {@link ResultsTableConf} instance passed as parameter.
      */
     public static ResultsTable buildResultsTable(List<Job> jobs, ResultsTableConf resultsTableConf) {
