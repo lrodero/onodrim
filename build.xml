@@ -41,7 +41,6 @@
     	<delete file="${jar}" quiet="true"/>
         <delete file="${src_jar}" quiet="true"/>
         <delete file="${doc_jar}" quiet="true"/>
-        <mkdir dir="${bin}"/>
     </target>
 	
     <!-- Compile the java code from ${src} into ${bin} -->
