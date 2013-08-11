@@ -27,7 +27,7 @@
     <property name="project" value="Onodrim"/>
 	<property name="version" value="0.5"/>
 	<property name="author" value="Luis Rodero-Merino"/>
-	  <!-- Paths -->
+	<!-- Paths -->
 	<property name="src" value="src"/>
 	<property name="bin" value="bin"/>
     <property name="doc" value="doc"/>
