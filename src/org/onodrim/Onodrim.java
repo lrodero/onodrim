@@ -94,7 +94,8 @@ public class Onodrim {
     /**
      * Similar to calling {@link #buildJobsSet(Properties, JobEntryPoint)} using {@code null} as the {@code JobEntryPoint} 
      * @param confProperties
-     * @return
+     * @return A {@link JobsSet} instance containing one job per each configuration created from the {@code Properties} passed
+     * as parameter.
      * @throws ConfigurationException
      */
     public static JobsSet buildJobsSet(Properties confProperties) throws ConfigurationException {
@@ -116,7 +117,8 @@ public class Onodrim {
      *                 to generate all jobs and Onodrim configuration. 
      * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run.
      *                   It can be {@code null}, but then Onodrim will not be able to run automatically this set.
-     * @return Instance of {@link JobsSet} created using the configuration stored in the file passed as parameter. 
+     * @return A {@link JobsSet} instance containing one job per each configuration created from the {@code Properties} passed
+     * as parameter. 
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
      * 
      * @see JobsSet#JobsSet(File, JobEntryPoint)
@@ -128,7 +130,8 @@ public class Onodrim {
     /**
      * Similar to calling {@link #buildJobsSet(File, JobEntryPoint)} using {@code null} as the {@code JobEntryPoint}
      * @param confFile
-     * @return
+     * @return A {@link JobsSet} instance containing one job per each configuration created from the {@code Properties} passed
+     * as parameter. 
      * @throws ConfigurationException
      */
     public static JobsSet buildJobsSet(File confFile) throws ConfigurationException {
