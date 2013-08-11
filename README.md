@@ -47,8 +47,14 @@ for(Configuration conf: confs) {
 }
 ```
 
-even better, you can ask Onodrim to take care of the jobs execution. Onodrim will run them and keep and ordered copy of the results
+**Is that all?** No :) .
+- Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.
+- It also allows to organize the results in handy tables for easy analysis.
+- Besides, it helps to keep well organized copies of all jobs, their configurations and results. Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed). Onodrim takes care of this when you delegate it the execution of jobs (automatic execution), like in the following example:
+
 ```java
+Onodrim.runJobs(new File("test.properties"), new JobImpl()); // JobImpl is provided by the user
+...
 class JobImpl implements JobEntryPoint {
     @Override
     public void startJob() {
@@ -63,14 +69,7 @@ class JobImpl implements JobEntryPoint {
         }
     }
 }
-...
-Onodrim.runJobs(new File("test.properties"), new JobImpl());
 ```
-
-**Is that all?** No :) .
-- Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.
-- It also allows to organize the results in handy tables for easy analysis.
-- Besides, it helps to keep well organized copies of all jobs, their configurations and results. Onodrim takes care of this when you delegate it the execution of jobs (automatic execution). Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed).
 
 A more detailed description of how to use Onodrim is available in the [Onodrim wiki in github](https://github.com/lrodero/onodrim/wiki).
 
