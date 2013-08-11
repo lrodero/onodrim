@@ -24,9 +24,11 @@
     </description>
   
 	<!-- Global properties -->
+    <property name="project" value="Onodrim"/>
 	<property name="version" value="0.5"/>
-	<!-- Paths -->
-    <property name="src" value="src"/>
+	<property name="author" value="Luis Rodero-Merino"/>
+	  <!-- Paths -->
+	<property name="src" value="src"/>
 	<property name="bin" value="bin"/>
     <property name="doc" value="doc"/>
 	<property name="jar" value="onodrim-${version}.jar"/>
@@ -58,10 +60,31 @@
 	<!-- Gen Jar files -->
 	<target name="jars" depends="compile,doc" description="Generate .jar file">
 		<copy file="${license}" todir="${bin}"/>
-        <jar jarfile="${jar}" basedir="${bin}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**"/>
+        <jar jarfile="${jar}" basedir="${bin}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**">
+        	<manifest>
+        	    <attribute name="Built-By" value="${author}"/>
+        	    <attribute name="Project" value="${project}"/>
+                <attribute name="Author" value="${author}"/>
+        	    <attribute name="Implementation-Version" value="${version}"/>
+            </manifest>
+		</jar>
 		<delete file="${bin}${file.separator}${license}"/>
-		<jar jarfile="${src_jar}" basedir="${src}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**"/>
-        <jar jarfile="${doc_jar}" basedir="${doc}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**"/>
+		<jar jarfile="${src_jar}" basedir="${src}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**">
+            <manifest>
+                <attribute name="Built-By" value="${author}"/>
+                <attribute name="Project" value="${project}"/>
+                <attribute name="Author" value="${author}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+            </manifest>
+        </jar>
+        <jar jarfile="${doc_jar}" basedir="${doc}" excludes="org${file.separator}onodrim${file.separator}test${file.separator}**">
+            <manifest>
+                <attribute name="Built-By" value="${author}"/>
+                <attribute name="Project" value="${project}"/>
+                <attribute name="Author" value="${author}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+            </manifest>
+        </jar>
 	</target>
 
 	<!-- All -->
