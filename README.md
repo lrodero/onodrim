@@ -66,7 +66,8 @@ class JobImpl implements JobEntryPoint {
             p1 = conf.getIntParameter("Parameter1");
             p2 = conf.getIntParameter("Parameter2");
         } catch (ConfigurationException exception) {
-            job.setErrorInExecution("Could not read conf: " + exception.getMessage(), exception);
+            job.setErrorInExecution("Could not read conf: " +
+                                    exception.getMessage(), exception);
             return;
         }
         // Your stuff here; results can be added as follows:
