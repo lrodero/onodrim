@@ -183,7 +183,7 @@ public class Job implements Runnable {
      */
     public void addResult(String resultName, Object result) {
         if (discard)
-            throw new Error("Cannot add a result to a discarded experiment");
+        	logger.log(Level.WARNING, "Adding result (" + resultName + "=" + result + ") to discarded job " + index);
         results.put(resultName, result);
     }
 
