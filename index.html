@@ -99,7 +99,8 @@
             <span class="n">p1</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter1"</span><span class="o">);</span>
             <span class="n">p2</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter2"</span><span class="o">);</span>
         <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ConfigurationException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">job</span><span class="o">.</span><span class="na">setErrorInExecution</span><span class="o">(</span><span class="s">"Could not read conf: "</span> <span class="o">+</span> <span class="n">exception</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">exception</span><span class="o">);</span>
+            <span class="n">job</span><span class="o">.</span><span class="na">setErrorInExecution</span><span class="o">(</span><span class="s">"Could not read conf: "</span> <span class="o">+</span>
+                                    <span class="n">exception</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">exception</span><span class="o">);</span>
             <span class="k">return</span><span class="o">;</span>
         <span class="o">}</span>
         <span class="c1">// Your stuff here; results can be added as follows:</span>
