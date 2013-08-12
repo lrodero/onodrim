@@ -56,7 +56,7 @@ public class JobsSet {
     
     private static final String DEFAULT_ALL_RESULTS_DIR = "results";
     public static final String ALL_RESULTS_DIR_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".allResultsDir";
-    public static final String PARAMS_IN_RESULTS_DIR_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".paramsInResultsDirName";
+    public static final String PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".paramsInJobResultsDirName";
     private static final boolean DEFAULT_CLEAN_ALL_PREV_RESULTS = true;
     public static final String CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME = ONODRIM_JOBS_PROPERTIES_HEADER + ".cleanAllPrevResults";
     private static final boolean DEFAULT_OVERWRITE_JOB_PREV_RESULTS = true;
@@ -93,7 +93,7 @@ public class JobsSet {
     /**
      * Flag that sets whether some paremeter names and values should be added to the results dir name.
      */
-    private List<String> paramsInResultsDirName = new ArrayList<String>();
+    private List<String> paramsInJobResultsDirName = new ArrayList<String>();
     /**
      * Flag that sets whether, if the folder where all results are going to be
      * stored exists, it should be deleted to erase any previous result.
@@ -231,8 +231,8 @@ public class JobsSet {
         allResultsDir = new File(allResultsDirName);
         jobsConf.remove(ALL_RESULTS_DIR_PROPERTY_NAME);
 
-        paramsInResultsDirName = jobsConf.getListParameter(PARAMS_IN_RESULTS_DIR_PROPERTY_NAME, String.class, paramsInResultsDirName);
-        jobsConf.remove(PARAMS_IN_RESULTS_DIR_PROPERTY_NAME);
+        paramsInJobResultsDirName = jobsConf.getListParameter(PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME, String.class, paramsInJobResultsDirName);
+        jobsConf.remove(PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME);
 
         cleanAllPrevResults = jobsConf.getBooleanParameter(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME, cleanAllPrevResults);
         jobsConf.remove(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME);
@@ -295,7 +295,7 @@ public class JobsSet {
             // Setting job results directory name
             Configuration conf = configurations.get(jobIndex-1);
             String jobResultsDirName = "Job-" + Job.indexAsString(jobIndex, configurations.size());
-            for(String paramName: paramsInResultsDirName)
+            for(String paramName: paramsInJobResultsDirName)
                 if(conf.parameterDefined(paramName))
                     jobResultsDirName += PARAM_SEPARATOR_IN_JOB_RESULTS_DIR_NAME + paramName + "=" + conf.getParameter(paramName);
             File jobResultsDir = new File(allResultsDir, jobResultsDirName);
