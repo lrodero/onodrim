@@ -2,7 +2,7 @@ Intro to Onodrim
 ================
 
 (This is a brief introduction to Onodrim, more detailed info is available in [Onodrim wiki](https://github.com/lrodero/onodrim/wiki). Contact address is 
- <onodrim.project@gmail.com>, if you use Onodrim please let me know! :) )
+ <onodrim.project@gmail.com>, if you use Onodrim please let me know!)
 
 Onodrim is a Java library that eases the configuration and collection of results of bunches of jobs (experiments, simulations...). Onodrim is handy when you need to run computations configured using several parameters, where each parameter can have different values, and where even the set of parameters can change. Also it organizes the results to ease their analysis.
 
@@ -22,7 +22,8 @@ Parameter2=0;1;2;3;4;5;6;7;8;9
 
 If we run the following code
 ```java
-List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
+File propsFile = new File("test.properties");
+List<Configuration> confs = Onodrim.buildConfigurations(propsFile);
 for(Configuration conf: confs) {
     int p1 = conf.getIntParameter("Parameter1");
     int p2 = conf.getIntParameter("Parameter2");
@@ -39,7 +40,8 @@ Parameter3=11.1;12.2;13.3
 
 just as before, Onodrim will generate all the configurations required (90 in this case), but your code will remain (almost) the same! You only need to retrieve the new parameter values
 ```java
-List<Configuration> confs = Onodrim.buildConfigurations(new File("test.properties"));
+File propsFile = new File("test.properties");
+List<Configuration> confs = Onodrim.buildConfigurations(propsFile);
 for(Configuration conf: confs) {
     int p1 = conf.getIntParameter("Parameter1");
     int p2 = conf.getIntParameter("Parameter2");
@@ -54,7 +56,8 @@ for(Configuration conf: confs) {
 - Besides, it helps to keep well organized copies of all jobs, their configurations and results. Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed). Onodrim takes care of this when you delegate it the execution of jobs (automatic execution), like in the following example:
 
 ```java
-Onodrim.runJobs(new File("test.properties"), new JobImpl());
+File propsFile = new File("test.properties");
+Onodrim.runJobs(propsFile, new JobImpl());
 ...
 class JobImpl implements JobEntryPoint {
     @Override
