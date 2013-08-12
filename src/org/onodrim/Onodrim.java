@@ -311,6 +311,11 @@ public class Onodrim {
      * @author lrodero
      */
     public static class Log {
+    	
+    	/**
+    	 * Private constructor, so no instances of this class can be created.
+    	 */
+    	private Log() {};
 
         /**
          * Logger associated to Onodrim root package, to capture all log messages sent by all classes
