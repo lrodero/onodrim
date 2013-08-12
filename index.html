@@ -35,7 +35,7 @@
 <a name="intro-to-onodrim" class="anchor" href="#intro-to-onodrim"><span class="octicon octicon-link"></span></a>Intro to Onodrim</h1>
 
 <p>(This is a brief introduction to Onodrim, more detailed info is available in <a href="https://github.com/lrodero/onodrim/wiki">Onodrim wiki</a>. Contact address is 
- <a href="mailto:onodrim.project@gmail.com">onodrim.project@gmail.com</a>, if you use Onodrim please let me know! :) )</p>
+ <a href="mailto:onodrim.project@gmail.com">onodrim.project@gmail.com</a>, if you use Onodrim please let me know!)</p>
 
 <p>Onodrim is a Java library that eases the configuration and collection of results of bunches of jobs (experiments, simulations...). Onodrim is handy when you need to run computations configured using several parameters, where each parameter can have different values, and where even the set of parameters can change. Also it organizes the results to ease their analysis.</p>
 
@@ -55,7 +55,8 @@
 
 <p>If we run the following code</p>
 
-<div class="highlight"><pre><span class="n">List</span><span class="o">&lt;</span><span class="n">Configuration</span><span class="o">&gt;</span> <span class="n">confs</span> <span class="o">=</span> <span class="n">Onodrim</span><span class="o">.</span><span class="na">buildConfigurations</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">));</span>
+<div class="highlight"><pre><span class="n">File</span> <span class="n">propsFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Configuration</span><span class="o">&gt;</span> <span class="n">confs</span> <span class="o">=</span> <span class="n">Onodrim</span><span class="o">.</span><span class="na">buildConfigurations</span><span class="o">(</span><span class="n">propsFile</span><span class="o">);</span>
 <span class="k">for</span><span class="o">(</span><span class="n">Configuration</span> <span class="nl">conf:</span> <span class="n">confs</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter1"</span><span class="o">);</span>
     <span class="kt">int</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter2"</span><span class="o">);</span>
@@ -72,7 +73,8 @@
 
 <p>just as before, Onodrim will generate all the configurations required (90 in this case), but your code will remain (almost) the same! You only need to retrieve the new parameter values</p>
 
-<div class="highlight"><pre><span class="n">List</span><span class="o">&lt;</span><span class="n">Configuration</span><span class="o">&gt;</span> <span class="n">confs</span> <span class="o">=</span> <span class="n">Onodrim</span><span class="o">.</span><span class="na">buildConfigurations</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">));</span>
+<div class="highlight"><pre><span class="n">File</span> <span class="n">propsFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Configuration</span><span class="o">&gt;</span> <span class="n">confs</span> <span class="o">=</span> <span class="n">Onodrim</span><span class="o">.</span><span class="na">buildConfigurations</span><span class="o">(</span><span class="n">propsFile</span><span class="o">);</span>
 <span class="k">for</span><span class="o">(</span><span class="n">Configuration</span> <span class="nl">conf:</span> <span class="n">confs</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter1"</span><span class="o">);</span>
     <span class="kt">int</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter2"</span><span class="o">);</span>
@@ -87,7 +89,8 @@
 <li>Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.</li>
 <li>It also allows to organize the results in handy tables for easy analysis.</li>
 <li>Besides, it helps to keep well organized copies of all jobs, their configurations and results. Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed). Onodrim takes care of this when you delegate it the execution of jobs (automatic execution), like in the following example:</li>
-</ul><div class="highlight"><pre><span class="n">Onodrim</span><span class="o">.</span><span class="na">runJobs</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">),</span> <span class="k">new</span> <span class="n">JobImpl</span><span class="o">());</span>
+</ul><div class="highlight"><pre><span class="n">File</span> <span class="n">propsFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">);</span>
+<span class="n">Onodrim</span><span class="o">.</span><span class="na">runJobs</span><span class="o">(</span><span class="n">propsFile</span><span class="o">,</span> <span class="k">new</span> <span class="n">JobImpl</span><span class="o">());</span>
 <span class="o">...</span>
 <span class="kd">class</span> <span class="nc">JobImpl</span> <span class="kd">implements</span> <span class="n">JobEntryPoint</span> <span class="o">{</span>
     <span class="nd">@Override</span>
