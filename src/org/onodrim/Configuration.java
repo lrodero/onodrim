@@ -70,7 +70,6 @@ public class Configuration extends Properties {
     public static final String REPETITIONS_PER_CONF_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".repetitions";
     public static final String GROUP_CONFS_BY_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".groupConfsBy";
     public static final String PACKETS_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".packets";
-    public static final String PACKETS_TO_IGNORE_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".packetsToIgnore";
     public static final String GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".generateParametersValuesCondition";
     private static final String PARAMETER_CONDITIONS_SEPARATOR = ":";
     public static final String PARAMETERS_BINDING_PROPERTY_NAME = ONODRIM_CONF_PROPERTIES_HEADER + ".boundParameters";
@@ -1032,30 +1031,6 @@ public class Configuration extends Properties {
             }
         }
         
-        // Shall we ignore any package?
-        String[] packetsToIgnore = null;
-        if(jobsConf.containsKey(PACKETS_TO_IGNORE_PROPERTY_NAME)) {
-            packetsToIgnore = jobsConf.getArrayParameter(PACKETS_TO_IGNORE_PROPERTY_NAME, String.class, null);
-            // Checking that no packet to ignore is defined as ""
-            for(String packetToIgnore: packetsToIgnore) {
-                packetToIgnore = packetToIgnore.trim();
-                if(packetToIgnore.isEmpty())
-                    throw new ConfigurationException("Cannot define a packet to ignore with empty name, check values in '" + PACKETS_TO_IGNORE_PROPERTY_NAME + "'");
-            }
-            // Checking that all packets to ignore are indeed defined in the packets list (first, checking if there is any packet list at all)
-            if((packets == null) || (packets.length == 0))
-                throw new ConfigurationException("Cannot defined a set of packets to ignore without defining any packet first! Check '" + PACKETS_PROPERTY_NAME + "' and '" + PACKETS_TO_IGNORE_PROPERTY_NAME + "' parameters");
-            List<String> packetsCopy = new ArrayList<String>(Arrays.asList(packets));
-            for(String packetToIgnore: packetsToIgnore)
-                if(!packetsCopy.contains(packetToIgnore))
-                    throw new ConfigurationException("Packet '" + packetToIgnore + "' marked as packet to ignore, but not found in the packets list, check '" + PACKETS_PROPERTY_NAME + "' and '" + PACKETS_TO_IGNORE_PROPERTY_NAME + "' parameters");
-            packetsCopy.removeAll(new ArrayList<String>(Arrays.asList(packetsToIgnore)));
-            // Checking that we still have some packet to run
-            if(packetsCopy.isEmpty())
-                throw new ConfigurationException("All defined packets are to be ignored, cannot create any configuration! Check '" + PACKETS_PROPERTY_NAME + "' and '" + PACKETS_TO_IGNORE_PROPERTY_NAME + "' parameters");
-            packets = packetsCopy.toArray(new String[]{});
-        }
-        
         String[] paramsValuesBindingsValue = jobsConf.getArrayParameter(PARAMETERS_BINDING_PROPERTY_NAME, String.class, null);
         ParamValueBinding[] paramsValuesBindings = parseParametersBindings(paramsValuesBindingsValue);
         if(paramsValuesBindings != null)
@@ -1177,18 +1152,27 @@ public class Configuration extends Properties {
         for(int index = 0; index < paramsGenerationConds.length; index++) {
             String paramsGenerationCond = paramsGenerationConds[index];
             String[] condition = paramsGenerationCond.split(PARAMETER_CONDITIONS_SEPARATOR);
-            if(condition.length < 2)
+            if(condition.length < 3)
                 throw new ConfigurationException("Cannot parse '"
                                 + GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME + "' properly, '" + paramsGenerationCond
-                                + "' is not well constructed, it should contain at least two strings split by '" + PARAMETER_CONDITIONS_SEPARATOR + "'");
-            Set<String>paramsToGenerate = new HashSet<String>(Arrays.asList(Arrays.copyOfRange(condition, 0, condition.length-1)));
+                                + "' is not well constructed, it should contain at least three strings split by '" + PARAMETER_CONDITIONS_SEPARATOR + "'");
+            ParamGenerationCondition.Action action = null;
+            if(condition[0].equals(ParamGenerationCondition.Action.DISCARD.name()))
+            	action = ParamGenerationCondition.Action.DISCARD;
+            else if(condition[0].equals(ParamGenerationCondition.Action.INCLUDE.name()))
+            	action = ParamGenerationCondition.Action.INCLUDE;
+            else throw new ConfigurationException("Cannot parse '"
+                    + GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME + "' properly, '" + paramsGenerationCond
+                    + "' is not well constructed, it should start either by '" + ParamGenerationCondition.Action.DISCARD
+                    + "' or '" + ParamGenerationCondition.Action.INCLUDE + "'");
+            Set<String>paramsToGenerate = new HashSet<String>(Arrays.asList(Arrays.copyOfRange(condition, 1, condition.length-1)));
             String generationParameter = condition[condition.length-1];
             String[] paramValue = generationParameter.trim().split("=");
             if(paramValue.length != 2)
                 throw new ConfigurationException("Cannot parse '"
                         + GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME + "' properly, '" + paramsGenerationCond
                         + "' is not well constructed in '" + generationParameter + "', it should contain two strings split by '='");
-            parsedGenerationConditions[index] = new ParamGenerationCondition(paramsToGenerate, new ParamValue(paramValue[0], paramValue[1]));
+            parsedGenerationConditions[index] = new ParamGenerationCondition(paramsToGenerate, new ParamValue(paramValue[0], paramValue[1]), action);
         }
         
         return parsedGenerationConditions;
@@ -1227,15 +1211,21 @@ public class Configuration extends Properties {
     static class ParamGenerationCondition {
         private Set<String> parameters = null;
         private ParamValue paramValue = null;
-        ParamGenerationCondition(Set<String> parameters, ParamValue paramValue) {
+        enum Action {INCLUDE, DISCARD};
+        private Action action = null;
+        ParamGenerationCondition(Set<String> parameters, ParamValue paramValue, Action action) {
             this.parameters = parameters;
             this.paramValue = paramValue;
+            this.action = action;
         }
         Set<String> getParameters() {
             return parameters;
         }
         ParamValue getParamValue() {
             return paramValue;
+        }
+        Action getAction() {
+        	return action;
         }
         @Override
         public String toString() {
@@ -1397,7 +1387,16 @@ public class Configuration extends Properties {
             Set<String> valuesOfParamValueInCondition = new HashSet<String>(Arrays.asList( paramsValuesForThisCondition.remove(paramValue.getParameter()) ));
             if(!valuesOfParamValueInCondition.contains(paramValue.getValue())) // If the value in the condition is not defined, then it must be ignored!
                 continue;
-            paramsValuesForThisCondition.keySet().retainAll(applicableCondition.getParameters());
+            switch(applicableCondition.action) {
+            	case INCLUDE:
+                	paramsValuesForThisCondition.keySet().retainAll(applicableCondition.getParameters());
+                	break;
+            	case DISCARD:
+                	paramsValuesForThisCondition.keySet().removeAll(applicableCondition.getParameters());
+                	break;
+                default:
+                	throw new Error("Unknown action in parsed condition(???)");
+            }
             Configuration[] confsGenUnderCondition = generateConfigurations(paramsValuesForThisCondition);
             for(Configuration confGenUnderCondition: confsGenUnderCondition)
                 confGenUnderCondition.put(paramValue.getParameter(), paramValue.getValue());

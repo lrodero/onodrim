@@ -107,15 +107,16 @@ NOTE: The parameters that do not belong to any of the defined packets will be as
 # Param3=X
 # Param4=Y
 # Param5=j;k
-# onodrim.generateParametersValuesCondition={Param1:Param2:Param5=j,Param3:Param4:Param5=k}
-## (means that Param1 and Param2 must be generated only when Param5 equals 'j', and Param3
-## and Param4 must be generated only when Param5=k)
+# onodrim.generateParametersValuesCondition={INCLUDE:Param1:Param2:Param5=j,DISCARD:Param1:Param5=k}
+## (means that Param1 and Param2 must be generated only when Param5 equals 'j', and Param1
+## must not be included in the configuration when Param5 equals 'k'.
 ## That would generate these configurations:
 ## 1-> Param1=a Param2=1 Param5=j
 ## 2-> Param1=b Param2=1 Param5=j
 ## 3-> Param1=a Param2=2 Param5=j
 ## 4-> Param1=b Param2=2 Param5=j
-## 5-> Param3=X Param4=Y Param5=k
+## 5-> Param2=1 Param3=X Param4=Y Param5=k
+## 6-> Param2=2 Param3=X Param4=Y Param5=k
 
 ##############################################
 ## Usage example of onodrim.boundParameters ##
