@@ -323,6 +323,7 @@ public class Job implements Runnable {
                 if (throwable != null) {
                     writer.println("(Non processed) exception caught when running experiment: " + throwable.getMessage());
                     throwable.printStackTrace(writer);
+                    errorInExecution = true;
                 } else {
                     writer.println("Execution was not successful, recorded error message:\n" + errorInExecutionMsg);
                     if(errorInExecutionCause != null) {
