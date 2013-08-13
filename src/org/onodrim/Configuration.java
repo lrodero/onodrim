@@ -859,11 +859,9 @@ public class Configuration extends Properties {
         // As before, this is necessary only if the default packet is not being used.
         if(!paramsValuesPerPacket.keySet().contains(DEFAULT_PACKET_NAME) && (paramsGerationConditions != null))
             for(ParamGenerationCondition paramGenerationCondition:paramsGerationConditions) {
-                System.out.println("\nChecking parameter generation condition: " + paramGenerationCondition);
                 List<String> parametersInCondition = new ArrayList<String>();
                 parametersInCondition.addAll(paramGenerationCondition.getParameters());
                 parametersInCondition.add(paramGenerationCondition.getParamValue().getParameter());
-                System.out.println("Parameters in condition:" + parametersInCondition.toString());
                 // Looking for packet...
                 String packetUsedInGenCond = null;
                 for(String parameterInCondition: parametersInCondition)
