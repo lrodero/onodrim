@@ -132,7 +132,9 @@ public class JobsSet {
      * Build a new set of jobs, building their configurations from the file passed as parameter. When they
      * are run, the {@link JobsExecutor} will use the entry point given (which should contain each {@link Job}
      * functionality)
-     * @param jobsConfsPropsFile 
+     * @param jobsConfsPropsFile This file will be read to generate the base configuration that will be used
+     *                 to generate all jobs and Onodrim configuration. The file must be a Java
+     *                 properties file ( @see http://en.wikipedia.org/wiki/.properties ).
      * @param jobsEntryPoint It can be {@code null}, but then Onodrim will not be able to run automatically this set
      * @throws ConfigurationException Raised if the jobs configuration could not be built
      */

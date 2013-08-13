@@ -114,7 +114,8 @@ public class Onodrim {
      * This method just wraps a call to {@link JobsSet#JobsSet(File, JobEntryPoint)} method.
      *
      * @param confFile This file will be read to generate the base configuration that will be used
-     *                 to generate all jobs and Onodrim configuration. 
+     *                 to generate all jobs and Onodrim configuration. The file must be a Java
+     *                 properties file ( @see http://en.wikipedia.org/wiki/.properties ).
      * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run.
      *                   It can be {@code null}, but then Onodrim will not be able to run automatically this set.
      * @return A {@link JobsSet} instance containing one job per each configuration created from the {@code Properties} passed
@@ -129,7 +130,9 @@ public class Onodrim {
     
     /**
      * Similar to calling {@link #buildJobsSet(File, JobEntryPoint)} using {@code null} as the {@code JobEntryPoint}
-     * @param confFile
+     * @param confFile This file will be read to generate the base configuration that will be used
+     *                 to generate all jobs and Onodrim configuration. The file must be a Java
+     *                 properties file ( @see http://en.wikipedia.org/wiki/.properties ).
      * @return A {@link JobsSet} instance containing one job per each configuration created from the {@code Properties} passed
      * as parameter. 
      * @throws ConfigurationException
@@ -153,12 +156,13 @@ public class Onodrim {
     }
 
     /**
-     * Create the {@link JobsSet} instance corresponding to tje configuration carried by the {@link File} passed
+     * Create the {@link JobsSet} instance corresponding to the configuration carried by the {@link File} passed
      * as paremeter (see {@link #buildJobsSet(File, JobEntryPoint)}) method) and immediately run the {@link Job}
      * instances in the set by calling to {@link JobsSet#runJobs()}.
      *   
      * @param confFile This file will be read to generate the base configuration that will be used
-     *                 to generate all jobs and Onodrim configuration.Base configuration of Onodrim and the jobs to be run
+     *                 to generate and run all jobs. The file must be a Java properties file
+     *                 ( @see http://en.wikipedia.org/wiki/.properties ).
      * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run
      * @throws JobExecutionException Raised if some problem is found when executing {@link Job}s
      * @throws ConfigurationException Raised if some problem is found when reading and processing configuration
@@ -192,7 +196,8 @@ public class Onodrim {
      * {@link JobsSet#runJobs(JobsExecutionWatcher)} method on it.
      * 
      * @param confFile This file will be read to generate the base configuration that will be used
-     *                 to generate all jobs and Onodrim configuration.Base configuration of Onodrim and the jobs to be run
+     *                 to generate and run all jobs. The file must be a Java properties file
+     *                 ( @see http://en.wikipedia.org/wiki/.properties ).
      * @param entryPoint Jobs entry point, i.e. instance that contains the functionality to be run
      * @param watcher It will be notified of different events such as the start/finalization of each job
      * @throws JobExecutionException Raised if some problem is found when executing {@link Job}s
