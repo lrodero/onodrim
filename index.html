@@ -89,8 +89,7 @@
 <li>Onodrim implements several mechanisms (conditional parameter generation, parameters grouping...) that bring a lot of flexibility when defining your experiments configuration.</li>
 <li>It also allows to organize the results in handy tables for easy analysis.</li>
 <li>Besides, it helps to keep well organized copies of all jobs, their configurations and results. Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed). Onodrim takes care of this when you delegate it the execution of jobs (automatic execution), like in the following example:</li>
-</ul><div class="highlight"><pre><span class="n">File</span> <span class="n">propsFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">);</span>
-<span class="n">Onodrim</span><span class="o">.</span><span class="na">runJobs</span><span class="o">(</span><span class="n">propsFile</span><span class="o">,</span> <span class="k">new</span> <span class="n">JobImpl</span><span class="o">());</span>
+</ul><div class="highlight"><pre><span class="n">Onodrim</span><span class="o">.</span><span class="na">runJobs</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"test.properties"</span><span class="o">),</span> <span class="k">new</span> <span class="n">JobImpl</span><span class="o">());</span>
 <span class="o">...</span>
 <span class="kd">class</span> <span class="nc">JobImpl</span> <span class="kd">implements</span> <span class="n">JobEntryPoint</span> <span class="o">{</span>
     <span class="nd">@Override</span>
@@ -101,12 +100,11 @@
         <span class="k">try</span> <span class="o">{</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter1"</span><span class="o">);</span>
             <span class="n">p2</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getIntParameter</span><span class="o">(</span><span class="s">"Parameter2"</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ConfigurationException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">job</span><span class="o">.</span><span class="na">setErrorInExecution</span><span class="o">(</span><span class="s">"Could not read conf: "</span> <span class="o">+</span>
-                                    <span class="n">exception</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">exception</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ConfigurationException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">job</span><span class="o">.</span><span class="na">setErrorInExecution</span><span class="o">(</span><span class="s">"Could not read conf"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
             <span class="k">return</span><span class="o">;</span>
         <span class="o">}</span>
-        <span class="c1">// Your stuff here; results can be added as follows:</span>
+        <span class="c1">// Your stuff here; results will be stored as follows:</span>
         <span class="n">job</span><span class="o">.</span><span class="na">addResult</span><span class="o">(</span><span class="s">"R1"</span><span class="o">,</span> <span class="n">p1</span><span class="o">*</span><span class="n">p2</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
