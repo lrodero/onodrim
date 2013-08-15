@@ -56,8 +56,7 @@ for(Configuration conf: confs) {
 - Besides, it helps to keep well organized copies of all jobs, their configurations and results. Even more, it can reuse results so it is not needed to run again jobs whose results were already obtained (e.g. in case the execution of some set was interrupter and/or some specific jobs failed). Onodrim takes care of this when you delegate it the execution of jobs (automatic execution), like in the following example:
 
 ```java
-File propsFile = new File("test.properties");
-Onodrim.runJobs(propsFile, new JobImpl());
+Onodrim.runJobs(new File("test.properties"), new JobImpl());
 ...
 class JobImpl implements JobEntryPoint {
     @Override
@@ -68,12 +67,11 @@ class JobImpl implements JobEntryPoint {
         try {
             p1 = conf.getIntParameter("Parameter1");
             p2 = conf.getIntParameter("Parameter2");
-        } catch (ConfigurationException exception) {
-            job.setErrorInExecution("Could not read conf: " +
-                                    exception.getMessage(), exception);
+        } catch (ConfigurationException e) {
+            job.setErrorInExecution("Could not read conf", e);
             return;
         }
-        // Your stuff here; results can be added as follows:
+        // Your stuff here; results will be stored as follows:
         job.addResult("R1", p1*p2);
     }
 }
