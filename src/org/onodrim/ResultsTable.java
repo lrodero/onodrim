@@ -119,7 +119,7 @@ public class ResultsTable {
         // First, filtering successful jobs
         List<Job> successfulJobs = new ArrayList<Job>();
         for(Job job: jobs)
-            if(!job.discarded() && !job.executionFailed())
+            if(!job.executionFailed())
                 successfulJobs.add(job);
         
         if(successfulJobs.isEmpty())
