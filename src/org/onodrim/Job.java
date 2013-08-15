@@ -277,7 +277,8 @@ public class Job implements Runnable {
         logger.log(Level.FINE, "Running pre-execution of job " + index);
 
         // Removing previous experiment results
-        logger.log(Level.FINE, "Removing folder with previous execution results '" + resultsDir.getAbsolutePath() + "' (if any)");
+        if(resultsDir.exists())
+        	logger.log(Level.FINE, "Removing folder with previous execution results '" + resultsDir.getAbsolutePath() + "'");
         if(!Util.removeDirRecursively(resultsDir)) {
             logger.log(Level.SEVERE, "Could not remove previous results directory '" + resultsDir.getAbsolutePath() + "'");
             throw new Error("Could not remove previous results directory '" + resultsDir.getAbsolutePath() + "'");
