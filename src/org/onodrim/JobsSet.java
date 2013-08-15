@@ -448,7 +448,6 @@ public class JobsSet {
         if(resultsTablesConfs == null)
             return;
 
-        logger.log(Level.FINE, "Printing results table");
         printHTMLResultsTables();
     }
     
@@ -459,6 +458,13 @@ public class JobsSet {
     public void printHTMLResultsTables() {
         
         List<ResultsTable> tables = ResultsTable.buildResultsTables(jobs, resultsTablesConfs);
+        
+        if(tables.size() == 0) {
+            logger.log(Level.FINE, "No results tables to print");
+            return;
+        }
+        
+        logger.log(Level.FINE, "Printing " + tables.size() + " results table(s)");
         
         for(int tableIndex = 0; tableIndex < tables.size(); tableIndex++) {
 
