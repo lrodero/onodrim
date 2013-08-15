@@ -402,11 +402,19 @@ public class JobsSet {
                             // Found job with identical configuration! Must assign results from previous job to it
                             // First, reading those results
                             File prevJobResultsFile = new File(folderInAllResultsDir, Job.SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
-                            logger.log(Level.FINE, "Results from previous execution found in file " + prevJobResultsFile.getAbsolutePath()
-                                                    + ", loading them and discarding job " + jobToRun.getIndex());
-                            jobToRun.discardAndLoadResulfsFromFile(prevJobResultsFile);
-                            jobsCopy.remove(jobToRun);
-                            break;
+                            if(!prevJobResultsFile.exists()) {
+                            	logger.log(Level.WARNING, "Results file " + prevJobResultsFile.getAbsolutePath()
+         			                   + " does not exist, ignoring subfolder");
+                            } else if(!prevJobResultsFile.canRead()) {
+                            	logger.log(Level.WARNING, "Cannot read results file " + prevJobResultsFile.getAbsolutePath()
+         			                   + "!! Please check, for this execution it will be ignored.");
+                            } else {
+	                            logger.log(Level.FINE, "Results from previous execution found in file " + prevJobResultsFile.getAbsolutePath()
+                                        + ", loading them and discarding job " + jobToRun.getIndex());
+	                            jobToRun.discardAndLoadResulfsFromFile(prevJobResultsFile);
+	                            jobsCopy.remove(jobToRun);
+	                            break;
+                            }
                         } // if(all parameters are equal) i.e. this is the 'same job'
                     } // for(job in list of jobs to run)
                 } // if(exits a results file from a previous execution)
