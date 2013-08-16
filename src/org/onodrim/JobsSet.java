@@ -313,7 +313,7 @@ public class JobsSet {
     public void runJobs(JobsExecutionWatcher watcher) throws JobExecutionException {
     	
     	for(Job job: jobs)
-    		if(job.jobEntryPointIsNull())
+    		if(!job.jobEntryPointIsSet())
     			throw new IllegalStateException("Some (of all) jobs were build without a " + JobEntryPoint.class.getName() +
     					                        " instance, Onodrim cannot run them automatically");
 

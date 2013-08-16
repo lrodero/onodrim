@@ -365,10 +365,10 @@ public class Job implements Runnable {
     /**
      * This method is used by {@link JobsSet#runJobs()} to make sure all jobs have the entry point
      * properly set before proceeding with the automated execution. 
-     * @return {@code true} if the entry point of this job is {@code null}.
+     * @return {@code true} if the entry point of this job is not {@code null}.
      */
-    protected boolean jobEntryPointIsNull() {
-    	return (entryPoint == null);
+    protected boolean jobEntryPointIsSet() {
+    	return (entryPoint != null);
     }
 
     /**
