@@ -94,7 +94,7 @@ this will compile the source in the `src` folder and store the compiled classes 
 
 **In a .zip archive** You can also download a `.zip` file containing Onodrim sources. Just run the following commands:
 ```bash
-$ get https://github.com/lrodero/onodrim/archive/master.zip
+$ wget https://github.com/lrodero/onodrim/archive/master.zip
 $ unzip master.zip
 $ cd onodrim-master
 $ ant
