@@ -112,4 +112,4 @@ Also, if you use Onodrim, I'd really appreaciate if you let me know! I'm very in
 
 FAQ
 ===
-**What does 'Onodrim' mean?** I am a fan of Tolkien works :) ! . Onodrim is _"The name given by the Elves to the giant tree-like beings that Men called Ents."_ ([The Encyclopedia or Arda](http://www.glyphweb.com/arda/o/onodrim.html)). As you probably know, and Onodrim/Ent is a shepherd of trees. Similarly, Onodrim is a kind of 'shepherd' of your jobs, as it should help you to organize and herd them. 
+**What does 'Onodrim' mean?** I am fan of Tolkien works :) ! . Onodrim is _"The name given by the Elves to the giant tree-like beings that Men called Ents."_ ([The Encyclopedia or Arda](http://www.glyphweb.com/arda/o/onodrim.html)). As you probably know, and Onodrim/Ent is a shepherd of trees. Similarly, Onodrim is a kind of 'shepherd' of your jobs, as it should help you to organize and herd them. 
