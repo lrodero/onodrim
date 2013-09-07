@@ -25,7 +25,7 @@
   
 	<!-- Global properties -->
     <property name="project" value="Onodrim"/>
-	<property name="version" value="0.5"/>
+	<property name="version" value="0.6"/>
 	<property name="author" value="Luis Rodero-Merino"/>
 	<!-- Paths -->
 	<property name="src" value="src"/>
