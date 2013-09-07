@@ -176,7 +176,7 @@ public class Configuration extends Properties {
      * @return {@code true} if the parameter is defined in this configuration
      *         instance, {@code false} otherwise.
      */
-    public boolean parameterDefined(String parameterName) {
+    public boolean isDefined(String parameterName) {
         return super.containsKey(parameterName);
     }
 
@@ -192,7 +192,7 @@ public class Configuration extends Properties {
      * @throws IllegalArgumentException
      *             if the parameter name is {@code null}.
      */
-    public String getParameter(String parameterName) {
+    public String getString(String parameterName) {
         if (parameterName == null)
             throw new IllegalArgumentException("The name of the parameter to get the value of cannot be null");
         String parameterValue = super.getProperty(parameterName);
@@ -215,7 +215,7 @@ public class Configuration extends Properties {
      * @throws IllegalArgumentException
      *             if the parameter name is {@code null}.
      */
-    public String getParameter(String parameterName, String defaultValue) {
+    public String getString(String parameterName, String defaultValue) {
         if (parameterName == null)
             throw new IllegalArgumentException("The name of the parameter to get the value of cannot be null");
         String parameterValue = super.getProperty(parameterName);
@@ -227,7 +227,7 @@ public class Configuration extends Properties {
     /**
      * Get the value of the parameter as instance of a particular class. This
      * method basically wraps a call to
-     * {@link #getParameter(String, Class, Object)} method, where the default
+     * {@link #getAs(String, Class, Object)} method, where the default
      * value is {@code null}.
      * 
      * @param parameterName
@@ -240,8 +240,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be 'transformed' into an
      *             instance of the class.
      */
-    public <T> T getParameter(String parameterName, Class<T> valueClass) throws ConfigurationException {
-        return getParameter(parameterName, valueClass, null);
+    public <T> T getAs(String parameterName, Class<T> valueClass) throws ConfigurationException {
+        return getAs(parameterName, valueClass, null);
     }
 
     /**
@@ -259,8 +259,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be 'transformed' into an
      *             instance of the class.
      */
-    public <T> T getParameter(String parameterName, Class<T> valueClass, T defaultValue) throws ConfigurationException {
-        String parameterValue = getParameter(parameterName);
+    public <T> T getAs(String parameterName, Class<T> valueClass, T defaultValue) throws ConfigurationException {
+        String parameterValue = getString(parameterName);
         if (parameterValue == null)
             return defaultValue;
         return parseValue(parameterValue, valueClass);
@@ -279,8 +279,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code boolean}
      *             using {@link Boolean#parseBoolean(String)}.
      */
-    public boolean getBooleanParameter(String parameterName, boolean defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Boolean.class, defaultValue);
+    public boolean getBoolean(String parameterName, boolean defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Boolean.class, defaultValue);
     }
     
     /** 
@@ -292,8 +292,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Boolean}
      *             using {@link Boolean#parseBoolean(String)}.
      */
-    public Boolean getBooleanParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Boolean.class, null);
+    public Boolean getBoolean(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Boolean.class, null);
     }
 
     /**
@@ -309,9 +309,9 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code byte}
      *             using {@link Byte#parseByte(String)}.
      */
-    public byte getByteParameter(String parameterName, byte defaultValue)
+    public byte getByte(String parameterName, byte defaultValue)
             throws ConfigurationException {
-        return getParameter(parameterName, Byte.class, defaultValue);
+        return getAs(parameterName, Byte.class, defaultValue);
     }
     
     /** 
@@ -323,8 +323,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Boolean}
      *             using {@link Byte#parseByte(String)}.
      */
-    public Byte getByteParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Byte.class, null);
+    public Byte getByte(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Byte.class, null);
     }
 
     /**
@@ -340,8 +340,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code short}
      *             using {@link Short#parseShort(String)}.
      */
-    public short getShortParameter(String parameterName, short defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Short.class, defaultValue);
+    public short getShort(String parameterName, short defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Short.class, defaultValue);
     }
     
     /** 
@@ -353,8 +353,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Short}
      *             using {@link Short#parseShort(String)}.
      */
-    public Short getShortParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Short.class, null);
+    public Short getShort(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Short.class, null);
     }
 
     /**
@@ -370,8 +370,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code int}
      *             using {@link Integer#parseInt(String)}.
      */
-    public int getIntParameter(String parameterName, int defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Integer.class, defaultValue);
+    public int getInt(String parameterName, int defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Integer.class, defaultValue);
     }
     
     /** 
@@ -383,8 +383,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Integer}
      *             using {@link Integer#parseInt(String)}.
      */
-    public Integer getIntParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Integer.class, null);
+    public Integer getInt(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Integer.class, null);
     }
 
     /**
@@ -400,8 +400,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code long}
      *             using {@link Long#parseLong(String)}.
      */
-    public long getLongParameter(String parameterName, long defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Long.class, defaultValue);
+    public long getLong(String parameterName, long defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Long.class, defaultValue);
     }
     
     /** 
@@ -413,8 +413,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Long}
      *             using {@link Long#parseLong(String)}.
      */
-    public Long getLongParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Long.class, null);
+    public Long getLong(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Long.class, null);
     }
 
     /**
@@ -430,8 +430,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code float}
      *             using {@link Float#parseFloat(String)}.
      */
-    public double getFloatParameter(String parameterName, float defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Float.class, defaultValue);
+    public double getFloat(String parameterName, float defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Float.class, defaultValue);
     }
     
     /** 
@@ -443,8 +443,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Float}
      *             using {@link Float#parseFloat(String)}.
      */
-    public Float getFloatParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Float.class, null);
+    public Float getFloat(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Float.class, null);
     }
 
     /**
@@ -460,8 +460,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code double}
      *             using {@link Double#parseDouble(String)}.
      */
-    public double getDoubleParameter(String parameterName, double defaultValue) throws ConfigurationException {
-        return getParameter(parameterName, Double.class, defaultValue);
+    public double getDouble(String parameterName, double defaultValue) throws ConfigurationException {
+        return getAs(parameterName, Double.class, defaultValue);
     }
     
     /** 
@@ -473,8 +473,8 @@ public class Configuration extends Properties {
      *             if the parameter value could not be parsed to {@code Double}
      *             using {@link Double#parseDouble(String)}.
      */
-    public Double getDoubleParameter(String parameterName) throws ConfigurationException {
-    	return getParameter(parameterName, Double.class, null);
+    public Double getDouble(String parameterName) throws ConfigurationException {
+    	return getAs(parameterName, Double.class, null);
     }
 
     /**
@@ -502,13 +502,13 @@ public class Configuration extends Properties {
      * @throws IllegalArgumentException
      *             if the parameter name or the values class is {@code null}.
      */
-    public <T> List<T> getListParameter(String parameterName, Class<T> valuesClass, List<T> defaultValue)
+    public <T> List<T> getList(String parameterName, Class<T> valuesClass, List<T> defaultValue)
             throws ConfigurationException {
 
         if (valuesClass == null)
             throw new IllegalArgumentException("It is needed to know the class type of the elements in the list of the parameter '"
                                             + parameterName + "' to build it");
-        String parameterValue = getParameter(parameterName);
+        String parameterValue = getString(parameterName);
         if (parameterValue == null) // If not found in configuration, then return default value
             return defaultValue;
         if (parameterValue.isEmpty()) // If found but with not value associated, then return empty list
@@ -542,7 +542,7 @@ public class Configuration extends Properties {
     /**
      * Get the parameter value as an array whose items are instances of the
      * class, if it is defined. If not, return the default value. In fact this
-     * method calls to {@link #getListParameter(String, Class, List)} and then
+     * method calls to {@link #getList(String, Class, List)} and then
      * passes the list elements to an array using
      * {@link java.util.List#toArray(Object[])}. For example, if this definition
      * is included in the configuration:<br>
@@ -570,19 +570,19 @@ public class Configuration extends Properties {
     @SuppressWarnings("unchecked")
     // The casting in (T[])Array.newInstance() causes a warning that we can
     // safely ignore
-    public <T> T[] getArrayParameter(String parameterName, Class<T> valuesClass, T[] defaultValue)
+    public <T> T[] getArray(String parameterName, Class<T> valuesClass, T[] defaultValue)
                     throws ConfigurationException {
 
         if (valuesClass == null)
             throw new IllegalArgumentException("It is needed to know the class type of the elements in the array of the parameter '"
                                                 + parameterName + "' to build it");
-        String parameterValue = getParameter(parameterName);
+        String parameterValue = getString(parameterName);
         if (parameterValue == null) // If not found in configuration, then return default value
             return defaultValue;
         if (parameterValue.isEmpty()) // If found but with not value associated, then return empty array
             return (T[]) Array.newInstance(valuesClass, 0);
 
-        List<T> asList = getListParameter(parameterName, valuesClass, (defaultValue != null ? Arrays.asList(defaultValue) : null));
+        List<T> asList = getList(parameterName, valuesClass, (defaultValue != null ? Arrays.asList(defaultValue) : null));
 
         if (valuesClass.isPrimitive()) {
             if (valuesClass.equals(Character.TYPE))
@@ -977,7 +977,7 @@ public class Configuration extends Properties {
         int repetitions = DEFAULT_REPETITIONS_PER_CONF;
         if (jobsConf.containsKey(REPETITIONS_PER_CONF_PROPERTY_NAME))
             try {
-                repetitions = jobsConf.getIntParameter(REPETITIONS_PER_CONF_PROPERTY_NAME, DEFAULT_REPETITIONS_PER_CONF);
+                repetitions = jobsConf.getInt(REPETITIONS_PER_CONF_PROPERTY_NAME, DEFAULT_REPETITIONS_PER_CONF);
             } catch (ConfigurationException exception) {
                 throw new ConfigurationException("Property '" + REPETITIONS_PER_CONF_PROPERTY_NAME
                                                 + "' sets the amount of repetitions per configuration"
@@ -987,7 +987,7 @@ public class Configuration extends Properties {
         // Jobs can be grouped by parameters
         String[] groupBy = null;
         if (jobsConf.containsKey(GROUP_CONFS_BY_PROPERTY_NAME)) {
-            groupBy = jobsConf.getArrayParameter(GROUP_CONFS_BY_PROPERTY_NAME, String.class, null);
+            groupBy = jobsConf.getArray(GROUP_CONFS_BY_PROPERTY_NAME, String.class, null);
             // Checking that all the parameters set to group by, are indeed defined in the configuration
             if (groupBy != null)
                 for (String paramName : groupBy)
@@ -999,7 +999,7 @@ public class Configuration extends Properties {
         // Packets are used to define 'families' of jobs; jobs in different packets do not share the configuration parameters
         String[] packets = null;
         if(jobsConf.containsKey(PACKETS_PROPERTY_NAME)) {
-            packets = jobsConf.getArrayParameter(PACKETS_PROPERTY_NAME, String.class, null);
+            packets = jobsConf.getArray(PACKETS_PROPERTY_NAME, String.class, null);
             // Checking that at least one parameter belongs to that packet, and that no packet is defined as ""
             for(String packet: packets) {
                 packet = packet.trim();
@@ -1029,7 +1029,7 @@ public class Configuration extends Properties {
             }
         }
         
-        String[] paramsValuesBindingsValue = jobsConf.getArrayParameter(PARAMETERS_BINDING_PROPERTY_NAME, String.class, null);
+        String[] paramsValuesBindingsValue = jobsConf.getArray(PARAMETERS_BINDING_PROPERTY_NAME, String.class, null);
         ParamValueBinding[] paramsValuesBindings = parseParametersBindings(paramsValuesBindingsValue);
         if(paramsValuesBindings != null)
             for(ParamValueBinding paramValueBinding: paramsValuesBindings) {
@@ -1041,7 +1041,7 @@ public class Configuration extends Properties {
             }
         
         
-        String[] generateParametersCondValues = jobsConf.getArrayParameter(GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME, String.class, null);
+        String[] generateParametersCondValues = jobsConf.getArray(GENERATE_PARAMETERS_VALUES_CONDITION_PROPERTY_NAME, String.class, null);
         ParamGenerationCondition[] paramGenerationsConditions = parseParametersGenerationConditions(generateParametersCondValues);
         if(paramGenerationsConditions != null)
             for(ParamGenerationCondition paramGenerationCondition: paramGenerationsConditions) {
@@ -1089,13 +1089,13 @@ public class Configuration extends Properties {
                     filteredConfsIter.remove();
                     break;
                 }
-                if ( conf.getParameter(paramBinding.getFirstParamValue().getParameter()).equals(paramBinding.getFirstParamValue().getValue()) &&
-                    !conf.getParameter(paramBinding.getSecondParamValue().getParameter()).equals(paramBinding.getSecondParamValue().getValue()) ) {
+                if ( conf.getString(paramBinding.getFirstParamValue().getParameter()).equals(paramBinding.getFirstParamValue().getValue()) &&
+                    !conf.getString(paramBinding.getSecondParamValue().getParameter()).equals(paramBinding.getSecondParamValue().getValue()) ) {
                     filteredConfsIter.remove();
                     break;
                 }
-                if (!conf.getParameter(paramBinding.getFirstParamValue().getParameter()).equals(paramBinding.getFirstParamValue().getValue()) &&
-                     conf.getParameter(paramBinding.getSecondParamValue().getParameter()).equals(paramBinding.getSecondParamValue().getValue()) ) {
+                if (!conf.getString(paramBinding.getFirstParamValue().getParameter()).equals(paramBinding.getFirstParamValue().getValue()) &&
+                     conf.getString(paramBinding.getSecondParamValue().getParameter()).equals(paramBinding.getSecondParamValue().getValue()) ) {
                     filteredConfsIter.remove();
                     break;
                 }
@@ -1292,7 +1292,7 @@ public class Configuration extends Properties {
         // order all values were
         // found
         for (Configuration conf : confs) {
-            String value = conf.getParameter(propName);
+            String value = conf.getString(propName);
             if (value == null)
                 throw new ConfigurationException("Parameter '" + propName + "' can not be found in properties set, cannot group by it");
             if (!valuesConfsMap.containsKey(value)) {
@@ -1561,7 +1561,7 @@ public class Configuration extends Properties {
      *             if some I/O error occurred wehn opening, writing to, or
      *             closing the file.
      */
-    public void saveInFile(File destFile) throws IOException {
+    public void saveIn(File destFile) throws IOException {
         SortedSet<String> orderedParams = new TreeSet<String>(getParameterNames());
         PrintWriter writer = new PrintWriter(new FileWriter(destFile));
         writer.println("# " + new Date().toString() + " #");

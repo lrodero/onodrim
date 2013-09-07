@@ -139,7 +139,7 @@ public class ResultsTable {
                     values = new LinkedHashSet<String>();
                     paramsValues.put(parameterName, values);
                 }
-                values.add(jobConf.getParameter(parameterName));
+                values.add(jobConf.getString(parameterName));
             }
             Properties resultsProperties = new Properties();
             for(String resultName: job.getResults().keySet())

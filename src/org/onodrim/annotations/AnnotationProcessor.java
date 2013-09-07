@@ -148,9 +148,9 @@ public class AnnotationProcessor {
             throws ConfigurationException {
 
         if (!typeClass.isArray())
-            return configuration.getParameter(parameterName, typeClass);
+            return configuration.getAs(parameterName, typeClass);
 
-        Object[] array = configuration.getArrayParameter(parameterName,
+        Object[] array = configuration.getArray(parameterName,
                 typeClass.getComponentType(), null);
 
         if (array == null)

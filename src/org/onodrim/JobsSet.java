@@ -229,17 +229,17 @@ public class JobsSet {
         
         Configuration jobsConf = new Configuration(jobsConfsProps);
 
-        String allResultsDirName = jobsConf.getParameter(ALL_RESULTS_DIR_PROPERTY_NAME, DEFAULT_ALL_RESULTS_DIR);
+        String allResultsDirName = jobsConf.getString(ALL_RESULTS_DIR_PROPERTY_NAME, DEFAULT_ALL_RESULTS_DIR);
         allResultsDir = new File(allResultsDirName);
         jobsConf.remove(ALL_RESULTS_DIR_PROPERTY_NAME);
 
-        paramsInJobResultsDirName = jobsConf.getListParameter(PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME, String.class, paramsInJobResultsDirName);
+        paramsInJobResultsDirName = jobsConf.getList(PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME, String.class, paramsInJobResultsDirName);
         jobsConf.remove(PARAMS_IN_JOB_RESULTS_DIR_PROPERTY_NAME);
 
-        cleanAllPrevResults = jobsConf.getBooleanParameter(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME, cleanAllPrevResults);
+        cleanAllPrevResults = jobsConf.getBoolean(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME, cleanAllPrevResults);
         jobsConf.remove(CLEAN_ALL_PREV_RESULTS_PROPERTY_NAME);
 
-        overwriteJobPrevResults = jobsConf.getBooleanParameter(OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME, overwriteJobPrevResults);
+        overwriteJobPrevResults = jobsConf.getBoolean(OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME, overwriteJobPrevResults);
         jobsConf.remove(OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME);
 
         if(cleanAllPrevResults && !overwriteJobPrevResults) {
@@ -249,18 +249,18 @@ public class JobsSet {
                     "'" + OVERWRITE_JOB_PREV_RESULTS_PROPERTY_NAME + "' to false");
         }
 
-        parallelJobs = jobsConf.getIntParameter(PARALLEL_JOBS_PROPERTY_NAME, parallelJobs);
+        parallelJobs = jobsConf.getInt(PARALLEL_JOBS_PROPERTY_NAME, parallelJobs);
         if(parallelJobs < 0) {
             logger.log(Level.WARNING, "Cannot set a negative number of parallel jobs, check '" + PARALLEL_JOBS_PROPERTY_NAME + "' property");
             throw new ConfigurationException("Cannot set a negative number of parallel jobs, check '" + PARALLEL_JOBS_PROPERTY_NAME + "' property");
         }
         jobsConf.remove(PARALLEL_JOBS_PROPERTY_NAME);
         
-        blockUntilFinished = jobsConf.getBooleanParameter(BLOCK_UNTIL_FINISHED_PROPERTY_NAME, blockUntilFinished);
+        blockUntilFinished = jobsConf.getBoolean(BLOCK_UNTIL_FINISHED_PROPERTY_NAME, blockUntilFinished);
         jobsConf.remove(BLOCK_UNTIL_FINISHED_PROPERTY_NAME);
 
         // Getting results tables configurations
-        resultsTablesConfs = ResultsTableConf.parseResultsTablesConf(jobsConf.getArrayParameter(RESULTS_TABLES_PROPERTY_NAME, String.class, null));
+        resultsTablesConfs = ResultsTableConf.parseResultsTablesConf(jobsConf.getArray(RESULTS_TABLES_PROPERTY_NAME, String.class, null));
         // Checking that tables will be built using parameters that are actually set
         for(ResultsTableConf resultsTableConf: resultsTablesConfs) {
             for(String[] rowParamsSet: resultsTableConf.getRowParamsSets()) // Rows sets
@@ -298,8 +298,8 @@ public class JobsSet {
             Configuration conf = configurations.get(jobIndex-1);
             String jobResultsDirName = "Job-" + Job.indexAsString(jobIndex, configurations.size());
             for(String paramName: paramsInJobResultsDirName)
-                if(conf.parameterDefined(paramName))
-                    jobResultsDirName += PARAM_SEPARATOR_IN_JOB_RESULTS_DIR_NAME + paramName + "=" + conf.getParameter(paramName);
+                if(conf.isDefined(paramName))
+                    jobResultsDirName += PARAM_SEPARATOR_IN_JOB_RESULTS_DIR_NAME + paramName + "=" + conf.getString(paramName);
             File jobResultsDir = new File(allResultsDir, jobResultsDirName);
             jobs.add(new Job(configurations.get(jobIndex-1), jobIndex, this, jobsEntryPoint, jobResultsDir));
         }
@@ -393,7 +393,7 @@ public class JobsSet {
                         // Well, at least the configuration of the previous job has the same configuration parameters, now reading its values
                         boolean allParamsEqual = true;
                         for(String paramName: jobConf.getParameterNames()) {
-                            if(!jobConf.getParameter(paramName).equals(prevJobConfig.getProperty(paramName).trim())) {
+                            if(!jobConf.getString(paramName).equals(prevJobConfig.getProperty(paramName).trim())) {
                                 allParamsEqual = false;
                                 break;
                             }

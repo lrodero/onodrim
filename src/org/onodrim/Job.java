@@ -28,9 +28,8 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -41,6 +40,7 @@ public class Job implements Runnable {
     private static Logger logger = Logger.getLogger(Job.class.getCanonicalName());
 
     protected static final String SUCESSFUL_EXECUTION_REPORT_FILE_NAME = "JobResults.txt";
+    protected static final String SUCESSFUL_EXECUTION_XMLREPORT_FILE_NAME = "JobResults.xml";
     private static final String FAILED_EXECUTION_REPORT_FILE_NAME = "JOB_ERROR_REPORT.txt";
     protected static final String CONFIG_STORE_FILE_NAME = "JobConfiguration.properties";
 
@@ -293,7 +293,7 @@ public class Job implements Runnable {
         // exists it will be overwritten
         File fileToStoreConf = new File(resultsDir, CONFIG_STORE_FILE_NAME);
         try {
-            conf.saveInFile(fileToStoreConf);
+            conf.saveIn(fileToStoreConf);
         } catch (IOException exception) {
             logger.log(Level.SEVERE, "IOException caught when trying to save configuration in file "
                             + fileToStoreConf.getAbsolutePath(), exception);
@@ -313,14 +313,14 @@ public class Job implements Runnable {
 
         logger.log(Level.FINE, "Job " + index + " finished, running after-execution process");
 
-        if ((throwable != null) || errorInExecution)
+        if ((throwable != null) || errorInExecution) {
+            // Something went wrong when running the job, we record error
+            // message in file for user check.
+            File report = new File(resultsDir, FAILED_EXECUTION_REPORT_FILE_NAME);
+            logger.log(Level.INFO, "Job " + index + " execution failed, recording failure information in file "
+                                   + report.getAbsolutePath());
             try {
-                // Something went wrong when running the job, we record error
-                // message in file for user check.
-                File failedExecutionReportFile = new File(resultsDir, FAILED_EXECUTION_REPORT_FILE_NAME);
-                logger.log(Level.INFO, "Job " + index + " execution failed, recording failure information in file "
-                                        + failedExecutionReportFile.getAbsolutePath());
-                PrintWriter writer = new PrintWriter(failedExecutionReportFile);
+                PrintWriter writer = new PrintWriter(report);
                 if (throwable != null) {
                     writer.println("(Non processed) exception caught when running experiment: " + throwable.getMessage());
                     throwable.printStackTrace(writer);
@@ -335,31 +335,56 @@ public class Job implements Runnable {
                 }
                 writer.close();
             } catch (IOException ioException) {
-                logger.log(Level.SEVERE, "Could not store error message for job " + index
-                                        + ", IOException caught", ioException);
-                throw new Error("Could not store error message for job " + index
-                                + ", IOException caught", ioException);
+                String errMsg = "Could not store error report of job " + index + ", " + IOException.class.getName()
+                                + " exception caught";
+                logger.log(Level.SEVERE, errMsg, ioException);
+                throw new Error(errMsg, ioException);
             }
-        else
-            try {
-                // Storing results
-                File successfulExecutionReportFile = new File(resultsDir, SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
-                if(discard)
-                    logger.log(Level.INFO, "Job " + index + " was discarded, storing results in file "
-                                            + successfulExecutionReportFile.getAbsolutePath());
-                else
-                    logger.log(Level.INFO, "Job " + index + " execution successful, storing results in file "
-                                            + successfulExecutionReportFile.getAbsolutePath());
-                PrintWriter writer = new PrintWriter(successfulExecutionReportFile);
-                writer.println("# " + new Date().toString() + " #");
-                for(String resultName: new TreeSet<String>(results.keySet()))
-                    writer.println(resultName + "=" + results.get(resultName));
-                writer.close();
-            } catch (IOException ioException) {
-                logger.log(Level.SEVERE, "Could not store results of job " + index + ", IOException caught",
-                            ioException);
-                throw new Error("Could not store results of job " + index + ", IOException caught", ioException);
-            }
+            return;
+        }
+        // Storing results
+        Date reportDate = new Date();
+        // First, in a 'traditional' reports file
+        File report = new File(resultsDir, SUCESSFUL_EXECUTION_REPORT_FILE_NAME);
+        logger.log(Level.INFO, "Storing results of job " + index + " in file " + report.getAbsolutePath());
+        try {
+            // The Properties.store() This method is problematic, as it casts all results to 'String',
+            // which is often not possible (e.g. when the result is an integer). So instead of using
+            // it we must do it 'the hard way' traversing the results map
+            PrintWriter writer = new PrintWriter(report);
+            writer.println("# " + reportDate.toString() + " #");
+            writer.println();
+            for(String key: results.keySet())
+                writer.println(key + "=" + results.get(key));
+            writer.close();
+        } catch (IOException ioException) {
+            String errMsg = "Could not store results of job " + index + ", " + IOException.class.getName()
+                            + " exception caught";
+            logger.log(Level.SEVERE, errMsg, ioException);
+            throw new Error(errMsg, ioException);
+        }
+        // Storing results now in an XML properties file
+        report = new File(resultsDir, SUCESSFUL_EXECUTION_XMLREPORT_FILE_NAME);
+        logger.log(Level.INFO, "Storing results of job " + index + " in XML format in file " + report.getAbsolutePath());
+        try {
+            // The Properties.storeToXML() does not work either, when some result cannot be
+            // casted to String (e.g. an integer) it just ignores it. So we 'emulate' its results.
+            PrintWriter writer = new PrintWriter(report);
+            writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
+            writer.println("<properties>");
+            writer.println("  <comment>"+reportDate.toString()+"</comment>");
+            for(String key: results.keySet())
+                writer.println("  <entry key=\""+key+"\">" + results.get(key) + "</entry>");
+            writer.println("</properties>");
+            writer.close();
+        } catch (IOException ioException) {
+            String errMsg = "Could not store results of job " + index + ", " + IOException.class.getName()
+                            + " exception caught";
+            logger.log(Level.SEVERE, errMsg, ioException);
+            throw new Error(errMsg, ioException);
+        }
+        
     }
     
     /**
