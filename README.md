@@ -25,8 +25,8 @@ If we run the following code
 File propsFile = new File("test.properties");
 List<Configuration> confs = Onodrim.buildConfigurations(propsFile);
 for(Configuration conf: confs) {
-    int p1 = conf.getIntParameter("Parameter1");
-    int p2 = conf.getIntParameter("Parameter2");
+    int p1 = conf.getInt("Parameter1");
+    int p2 = conf.getInt("Parameter2");
     // Your stuff here
 }
 ```
@@ -43,9 +43,9 @@ just as before, Onodrim will generate all the configurations required (90 in thi
 File propsFile = new File("test.properties");
 List<Configuration> confs = Onodrim.buildConfigurations(propsFile);
 for(Configuration conf: confs) {
-    int p1 = conf.getIntParameter("Parameter1");
-    int p2 = conf.getIntParameter("Parameter2");
-    double p3 = conf.getDoubleParameter("Parameter3");
+    int p1 = conf.getInt("Parameter1");
+    int p2 = conf.getInt("Parameter2");
+    double p3 = conf.getDouble("Parameter3");
     // Your stuff here
 }
 ```
@@ -65,8 +65,8 @@ class JobImpl implements JobEntryPoint {
         Configuration conf = job.getConfiguration();
         int p1=0,p2=0;
         try {
-            p1 = conf.getIntParameter("Parameter1");
-            p2 = conf.getIntParameter("Parameter2");
+            p1 = conf.getInt("Parameter1");
+            p2 = conf.getInt("Parameter2");
         } catch (ConfigurationException e) {
             job.setErrorInExecution("Could not read conf", e);
             return;
