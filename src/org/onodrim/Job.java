@@ -370,7 +370,7 @@ public class Job implements Runnable {
             // The Properties.storeToXML() does not work either, when some result cannot be
             // casted to String (e.g. an integer) it just ignores it. So we 'emulate' its results.
             PrintWriter writer = new PrintWriter(report);
-            writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.println("<?xml version=\"1.0\" encoding=\"" + System.getProperty("file.encoding") + "\" standalone=\"no\"?>");
             writer.println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
             writer.println("<properties>");
             writer.println("  <comment>"+reportDate.toString()+"</comment>");
