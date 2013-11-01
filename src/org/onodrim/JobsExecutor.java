@@ -20,7 +20,9 @@
 
 package org.onodrim;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -35,9 +37,21 @@ class JobsExecutor extends ThreadPoolExecutor {
     // In fact, as the number of core threads equals the number of max threads,
     // this has no effect.
     private static final long KEEP_ALIVE_TIME = 1;
-    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.MILLISECONDS;
+    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.NANOSECONDS;
 
     private static Logger logger = Logger.getLogger(JobsExecutor.class.getCanonicalName());
+    
+    // We use a custom thread factory to be able to set names to the threads
+    // that will be instantiated by the thread pool executor
+    private static ThreadFactory thFactory = new ThreadFactory() {
+        ThreadFactory defThFactory = Executors.defaultThreadFactory();        
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = defThFactory.newThread(r);
+            t.setName("OJE-"+t.getId());
+            return t;
+        }        
+    };
 
     /**
      * {@link JobsSet} instance that contains the {@link Job}s to be run
@@ -63,7 +77,8 @@ class JobsExecutor extends ThreadPoolExecutor {
      */
     public JobsExecutor(int maxJobsRunInParallel, JobsSet jobsSet, JobsExecutionWatcher watcher) {
         super(  maxJobsRunInParallel, maxJobsRunInParallel, KEEP_ALIVE_TIME,
-                KEEP_ALIVE_TIME_UNIT, new LinkedBlockingQueue<Runnable>(jobsSet.getJobs()));
+                KEEP_ALIVE_TIME_UNIT, new LinkedBlockingQueue<Runnable>(jobsSet.getJobs()), thFactory);
+        super.allowCoreThreadTimeOut(true);
         //if(jobsSet == null)
         //    throw new IllegalArgumentException("Cannot create a jobs executor instance with a null set of jobs to execute");
         this.jobsSet = jobsSet;

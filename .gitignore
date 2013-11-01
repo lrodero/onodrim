@@ -1,0 +1,6 @@
+# Eclipse files #
+/bin
+.classpath
+.settings
+.project
+

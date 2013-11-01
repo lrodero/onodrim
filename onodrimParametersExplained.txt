@@ -32,6 +32,7 @@
 #onodrim.jobs.cleanAllPrevResults=true
 #onodrim.jobs.overwriteJobPrevResults=true
 #onodrim.jobs.parallel=1
+#onodrim.jobs.blockUntilFinished=false
 #onodrim.jobs.tablesResults=
 
 ##############################################
@@ -193,6 +194,13 @@ NOTE: The parameters that do not belong to any of the defined packets will be as
 ## For example:
 #onodrim.jobs.parallel=2
 ## would tell Onodrim to start two parallel threads to run jobs.
+
+######################################################
+## Usage example of onodrim.jobs.blockUntilFinished ##
+######################################################
+## This parameter sets whether the call to Onodrim.runJobs() is
+## blocking or not.
+## Defaults to 'false'.
 
 #################################################
 ## Usage example of onodrim.jobs.tablesResults ##
